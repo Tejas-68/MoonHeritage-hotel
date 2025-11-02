@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>MoonHeritage - Hotel Listings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .card { transition: all 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
+        .filter-btn { transition: all 0.3s; }
+        .filter-btn.active { background: #2563eb; color: white; }
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 5px; background: #e5e7eb; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #2563eb; cursor: pointer; }
+        input[type="range"]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #2563eb; cursor: pointer; border: none; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-gray-900 text-white py-4 px-6 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <a href="index.html" class="flex items-center space-x-2">
+                    <i class="fas fa-moon text-2xl text-blue-400" aria-hidden="true"></i>
+                    <span class="text-xl font-bold">MoonHeritage</span>
+                </a>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-blue-400">Home</a>
+                    <a href="hotels.html" class="text-blue-400">Hotel</a>
+                    <a href="#" class="hover:text-blue-400">Flight</a>
+                    <a href="#" class="hover:text-blue-400">Train</a>
+                    <a href="#" class="hover:text-blue-400">Travel</a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="flex items-center space-x-2 hover:text-blue-400">
+                    <i class="far fa-user" aria-hidden="true"></i>
+                    <span>Login</span>
+                </button>
+                <button class="bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-700 transition">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Bar -->
+    <div class="bg-white shadow-md py-6 px-6">
+        <div class="max-w-7xl mx-auto">
+            <form class="grid md:grid-cols-5 gap-4" onsubmit="event.preventDefault();">
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-600 mb-1">Location</label>
+                    <input id="locationInput" type="text" placeholder="Bali, Indonesia" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-600 mb-1">Check-in</label>
+                    <input id="checkin" type="date" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-600 mb-1">Check-out</label>
+                    <input id="checkout" type="date" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-sm text-gray-600 mb-1">Guests</label>
+                    <select id="guests" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>2 guests, 1 room</option>
+                        <option>3 guests, 1 room</option>
+                        <option>4 guests, 2 rooms</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button id="searchBtn" type="submit" class="bg-blue-600 text-white w-full py-2 rounded-lg hover:bg-blue-700 transition font-semibold">
+                        <i class="fas fa-search mr-2" aria-hidden="true"></i>Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Filters Sidebar -->
+            <aside class="w-full md:w-64 flex-shrink-0">
+                <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24">
+                    <h3 class="font-bold text-xl mb-4">Filters</h3>
+                    
+                    <!-- Price Range -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold mb-3">Price Range</h4>
+                        <input type="range" min="0" max="1000" value="150" class="mb-2" id="priceRange">
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>$0</span>
+                            <span id="priceValue">$150</span>
+                            <span>$1000</span>
+                        </div>
+                    </div>
+
+                    <!-- Rating -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold mb-3">Rating</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="flex text-yellow-400 text-sm" aria-hidden="true">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="flex text-yellow-400 text-sm" aria-hidden="true">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                                </span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="flex text-yellow-400 text-sm" aria-hidden="true">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Amenities -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold mb-3">Amenities</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Free WiFi</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Swimming Pool</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Parking</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Restaurant</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Gym</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Spa</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Property Type -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold mb-3">Property Type</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Hotels</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Villas</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Resorts</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="mr-2" />
+                                <span class="text-sm">Apartments</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                        Apply Filters
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Hotel Listings -->
+            <main class="flex-1">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold">256 Hotels in Bali</h2>
+                        <p class="text-gray-600">Choose your perfect stay</p>
+                    </div>
+                    <select class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option>Recommended</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Rating: High to Low</option>
+                    </select>
+                </div>
+
+                <!-- Hotel Cards -->
+                <div class="space-y-6">
+                    <!-- Hotel Card 1 -->
+                    <article class="card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+                        <div class="md:w-80 h-64 md:h-auto bg-gradient-to-br from-blue-400 to-purple-600 flex-shrink-0" role="img" aria-label="Mesastila Resort image"></div>
+                        <div class="flex-1 p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="font-bold text-xl mb-1">Mesastila Resort Hotel</h3>
+                                    <p class="text-sm text-gray-600 flex items-center">
+                                        <i class="fas fa-map-marker-alt mr-1" aria-hidden="true"></i> Ubud, Bali, Indonesia
+                                    </p>
+                                </div>
+                                <button class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 fav-btn" aria-label="Save Mesastila Resort">
+                                    <i class="far fa-heart fav-icon" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center mb-3">
+                                <div class="flex text-yellow-400 text-sm mr-2" aria-hidden="true">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-sm text-gray-600">(1,340 Reviews)</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs">Free WiFi</span>
+                                <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">Private Pool</span>
+                                <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs">Kitchen</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Boutique villa in trendy Canggu area. Walking distance to surf beaches, cafes, and nightlife. Perfect for digital nomads.</p>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-3xl font-bold text-blue-600">$150</span>
+                                    <span class="text-gray-600">/night</span>
+                                </div>
+                                <button class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">View Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Hotel Card 2 -->
+                    <article class="card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+                        <div class="md:w-80 h-64 md:h-auto bg-gradient-to-br from-amber-400 to-red-600 flex-shrink-0" role="img" aria-label="Sandhya Villa Inn image"></div>
+                        <div class="flex-1 p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="font-bold text-xl mb-1">Sandhya Villa Inn</h3>
+                                    <p class="text-sm text-gray-600 flex items-center">
+                                        <i class="fas fa-map-marker-alt mr-1" aria-hidden="true"></i> Seminyak, Bali, Indonesia
+                                    </p>
+                                </div>
+                                <button class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 fav-btn" aria-label="Save Sandhya Villa">
+                                    <i class="far fa-heart fav-icon" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center mb-3">
+                                <div class="flex text-yellow-400 text-sm mr-2" aria-hidden="true">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="text-sm text-gray-600">(1,876 Reviews)</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs">Free WiFi</span>
+                                <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">Pool</span>
+                                <span class="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-xs">Beach Access</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Modern villa with private pool and stunning ocean views. Perfect for couples and families seeking a peaceful retreat near the beach.</p>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-3xl font-bold text-blue-600">$220</span>
+                                    <span class="text-gray-600">/night</span>
+                                </div>
+                                <button class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">View Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Hotel Card 3 -->
+                    <article class="card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+                        <div class="md:w-80 h-64 md:h-auto bg-gradient-to-br from-teal-400 to-blue-600 flex-shrink-0" role="img" aria-label="Oceanid Heights Resort image"></div>
+                        <div class="flex-1 p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="font-bold text-xl mb-1">Oceanid Heights Resort</h3>
+                                    <p class="text-sm text-gray-600 flex items-center">
+                                        <i class="fas fa-map-marker-alt mr-1" aria-hidden="true"></i> Nusa Dua, Bali, Indonesia
+                                    </p>
+                                </div>
+                                <button class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 fav-btn" aria-label="Save Oceanid Heights">
+                                    <i class="far fa-heart fav-icon" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center mb-3">
+                                <div class="flex text-yellow-400 text-sm mr-2" aria-hidden="true">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-sm text-gray-600">(2,450 Reviews)</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs">Free WiFi</span>
+                                <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">Pool</span>
+                                <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs">Spa</span>
+                                <span class="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-xs">Gym</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">5-star beachfront resort with world-class amenities. Features multiple restaurants, infinity pools, and direct beach access.</p>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-3xl font-bold text-blue-600">$385</span>
+                                    <span class="text-gray-600">/night</span>
+                                </div>
+                                <button class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">View Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Hotel Card 4 -->
+                    <article class="card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+                        <div class="md:w-80 h-64 md:h-auto bg-gradient-to-br from-pink-400 to-rose-600 flex-shrink-0" role="img" aria-label="Elonas Retreat Villa image"></div>
+                        <div class="flex-1 p-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="font-bold text-xl mb-1">Elonas Retreat Villa</h3>
+                                    <p class="text-sm text-gray-600 flex items-center">
+                                        <i class="fas fa-map-marker-alt mr-1" aria-hidden="true"></i> Canggu, Bali, Indonesia
+                                    </p>
+                                </div>
+                                <button class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 fav-btn" aria-label="Save Elonas Retreat">
+                                    <i class="far fa-heart fav-icon" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <div class="flex items-center mb-3">
+                                <div class="flex text-yellow-400 text-sm mr-2" aria-hidden="true">
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                                </div>
+                                <span class="text-sm text-gray-600">(980 Reviews)</span>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs">Free WiFi</span>
+                                <span class="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs">Pool</span>
+                                <span class="bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-xs">Spa</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4">Cozy villa ideal for a relaxed getaway. Close to cafes and local markets with a friendly staff and comfortable rooms.</p>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-3xl font-bold text-blue-600">$160</span>
+                                    <span class="text-gray-600">/night</span>
+                                </div>
+                                <button class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">View Details</button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <!-- Pagination -->
+                <nav class="flex justify-center items-center space-x-2 mt-8" aria-label="Pagination">
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100" aria-label="Previous page">
+                        <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg">1</button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">2</button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">3</button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">4</button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">5</button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100" aria-label="Next page">
+                        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </nav>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12 px-6 mt-16">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-5 gap-8 mb-8">
+                <div class="md:col-span-2">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-moon text-3xl text-blue-400" aria-hidden="true"></i>
+                        <span class="text-2xl font-bold">MoonHeritage</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Your trusted booking platform for the best deals on accommodations worldwide.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition" aria-label="Facebook">
+                            <i class="fab fa-facebook-f" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition" aria-label="Twitter">
+                            <i class="fab fa-twitter" aria-hidden="true"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-600 transition" aria-label="Instagram">
+                            <i class="fab fa-instagram" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4">About</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">About Us</a></li>
+                        <li><a href="#" class="hover:text-white">Careers</a></li>
+                        <li><a href="#" class="hover:text-white">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4">Support</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="hover:text-white">Help Center</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4">Legal</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2025 MoonHeritage. All rights reserved</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Price range slider
+        const priceRange = document.getElementById('priceRange');
+        const priceValue = document.getElementById('priceValue');
+
+        function updatePriceValue(val) {
+            priceValue.textContent = `$${parseInt(val)}`;
+        }
+
+        priceRange.addEventListener('input', function() {
+            updatePriceValue(this.value);
+            // optionally filter visible cards by price here
+        });
+
+        // Initialize displayed value
+        updatePriceValue(priceRange.value);
+
+        // Heart (favorite) toggle
+        document.querySelectorAll('.fav-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const icon = this.querySelector('.fav-icon');
+                if (!icon) return;
+                if (icon.classList.contains('far')) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    icon.style.color = '#ef4444';
+                } else {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    icon.style.color = '';
+                }
+            });
+        });
+
+        // Example: Search button - demonstrates capturing inputs (no backend)
+        document.getElementById('searchBtn').addEventListener('click', function(e) {
+            // Values available if you want to implement filtering or send to server
+            const query = {
+                location: document.getElementById('locationInput').value,
+                checkin: document.getElementById('checkin').value,
+                checkout: document.getElementById('checkout').value,
+                guests: document.getElementById('guests').value,
+                maxPrice: document.getElementById('priceRange').value
+            };
+            console.log('Search pressed, query:', query);
+            // Add your filtering logic here.
+        });
+    </script>
+</body>
+</html>

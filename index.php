@@ -2,8 +2,9 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once 'config.php';
 
-// Fetch featured hotels
 $db = getDB();
+
+// Fetch featured hotels
 $featuredHotelsStmt = $db->query("
     SELECT h.*, 
     (SELECT AVG(rating) FROM reviews WHERE hotel_id = h.id AND status = 'approved') as avg_rating,
@@ -27,8 +28,8 @@ $featuredVillasStmt = $db->query("
 ");
 $featuredVillas = $featuredVillasStmt->fetchAll();
 
-// Fetch all amenities for filter
-$amenitiesStmt = $db->query("SELECT * FROM amenities ORDER BY name");
+// Fetch amenities
+$amenitiesStmt = $db->query("SELECT * FROM amenities ORDER BY name LIMIT 12");
 $amenities = $amenitiesStmt->fetchAll();
 
 // Fetch active promotions
@@ -52,16 +53,6 @@ $promotions = $promotionsStmt->fetchAll();
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-gray-50">
-    <?php if (isLoggedIn() && isAdmin() && !isset($_GET['user_view'])): ?>
-    <!-- Admin Notice -->
-    <div class="bg-yellow-500 text-white py-2 px-6 text-center">
-        <i class="fas fa-exclamation-triangle mr-2"></i>
-        You're viewing as Admin. 
-        <a href="admin/dashboard.php" class="underline font-semibold ml-2">Go to Admin Panel</a>
-        <span class="mx-2">|</span>
-        <a href="logout.php" class="underline font-semibold">Logout</a>
-    </div>
-    <?php endif; ?>
     
     <!-- Navigation -->
     <nav class="bg-black text-white sticky top-0 z-50 shadow-lg">
@@ -132,9 +123,9 @@ $promotions = $promotionsStmt->fetchAll();
                         </div>
                         <div class="flex flex-wrap gap-2">
                             <span class="text-gray-700 text-sm font-semibold">Filter:</span>
-                            <button type="button" onclick="filterByCategory('hotel')" class="px-4 py-1 bg-blue-600 text-white text-sm rounded-full hover:bg-blue-700">Hotel</button>
-                            <button type="button" onclick="filterByCategory('villa')" class="px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-300">Villa</button>
-                            <button type="button" onclick="filterByCategory('resort')" class="px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-300">Resorts</button>
+                            <a href="hotels.php?category=hotel" class="px-4 py-1 bg-blue-600 text-white text-sm rounded-full hover:bg-blue-700">Hotel</a>
+                            <a href="hotels.php?category=villa" class="px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-300">Villa</a>
+                            <a href="hotels.php?category=resort" class="px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-300">Resorts</a>
                         </div>
                     </form>
                 </div>
@@ -148,7 +139,7 @@ $promotions = $promotionsStmt->fetchAll();
             <div class="flex justify-between items-center mb-8">
                 <div>
                     <h2 class="text-4xl font-bold mb-2">Top Trending Hotels</h2>
-                    <p class="text-gray-600">Discover the most trending hotels worldwide for an unforgettable experience.</p>
+                    <p class="text-gray-600">Discover the most trending hotels worldwide</p>
                 </div>
                 <a href="hotels.php?category=hotel" class="text-blue-600 hover:underline flex items-center">
                     See All <i class="fas fa-arrow-right ml-2"></i>
@@ -160,9 +151,6 @@ $promotions = $promotionsStmt->fetchAll();
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
                     <div class="relative">
                         <img src="<?php echo getImageUrl($hotel['main_image']); ?>" alt="<?php echo escape($hotel['name']); ?>" class="w-full h-48 object-cover">
-                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
-                            <i class="far fa-heart text-gray-600"></i>
-                        </button>
                         <?php if ($hotel['discount_percentage'] > 0): ?>
                         <span class="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                             -<?php echo $hotel['discount_percentage']; ?>%
@@ -184,9 +172,6 @@ $promotions = $promotionsStmt->fetchAll();
                             <div>
                                 <span class="text-2xl font-bold text-blue-600"><?php echo formatPrice($hotel['price_per_night']); ?></span>
                                 <span class="text-gray-500 text-sm">/night</span>
-                                <?php if ($hotel['original_price'] > $hotel['price_per_night']): ?>
-                                <span class="text-gray-400 line-through text-sm ml-1"><?php echo formatPrice($hotel['original_price']); ?></span>
-                                <?php endif; ?>
                             </div>
                         </div>
                         <a href="hotel-details.php?slug=<?php echo $hotel['slug']; ?>" class="mt-4 block text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
@@ -205,7 +190,7 @@ $promotions = $promotionsStmt->fetchAll();
             <div class="flex justify-between items-center mb-8">
                 <div>
                     <h2 class="text-4xl font-bold mb-2">Luxury Villas</h2>
-                    <p class="text-gray-600">Experience privacy and luxury in our exclusive villa collection.</p>
+                    <p class="text-gray-600">Experience privacy and luxury</p>
                 </div>
                 <a href="hotels.php?category=villa" class="text-blue-600 hover:underline flex items-center">
                     See All <i class="fas fa-arrow-right ml-2"></i>
@@ -217,9 +202,6 @@ $promotions = $promotionsStmt->fetchAll();
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
                     <div class="relative">
                         <img src="<?php echo getImageUrl($villa['main_image']); ?>" alt="<?php echo escape($villa['name']); ?>" class="w-full h-48 object-cover">
-                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
-                            <i class="far fa-heart text-gray-600"></i>
-                        </button>
                     </div>
                     <div class="p-4">
                         <h3 class="font-bold text-lg mb-1"><?php echo escape($villa['name']); ?></h3>
@@ -228,9 +210,6 @@ $promotions = $promotionsStmt->fetchAll();
                         </p>
                         <div class="flex items-center mb-3">
                             <?php echo getStarRating($villa['star_rating']); ?>
-                            <?php if ($villa['review_count'] > 0): ?>
-                            <span class="text-gray-600 text-sm ml-2">(<?php echo $villa['review_count']; ?> Reviews)</span>
-                            <?php endif; ?>
                         </div>
                         <div class="flex justify-between items-center">
                             <div>
@@ -247,60 +226,6 @@ $promotions = $promotionsStmt->fetchAll();
             </div>
         </div>
     </section>
-
-    <!-- Facilities Filter Section -->
-    <section class="py-16 bg-gray-50">
-        <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold mb-4 text-center">Find Properties by Amenities</h2>
-            <p class="text-gray-600 mb-8 text-center">Select facilities that matter most to you</p>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <?php foreach ($amenities as $amenity): ?>
-                <a href="hotels.php?amenity=<?php echo $amenity['id']; ?>" 
-                   class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition text-center group cursor-pointer">
-                    <i class="fas <?php echo $amenity['icon']; ?> text-4xl text-blue-600 mb-3 group-hover:scale-110 transition"></i>
-                    <h3 class="font-semibold text-gray-800"><?php echo escape($amenity['name']); ?></h3>
-                </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
-
-    <!-- Promotions Section -->
-    <?php if (!empty($promotions)): ?>
-    <section class="py-16 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-4xl font-bold">Get promo for a cheaper price</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <?php foreach ($promotions as $promo): ?>
-                <div class="relative rounded-lg overflow-hidden shadow-lg h-64" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <div class="absolute inset-0 flex items-center p-8">
-                        <div class="text-white">
-                            <div class="flex items-center mb-2">
-                                <div class="bg-yellow-400 rounded-full p-3 mr-4">
-                                    <i class="fas fa-percent text-2xl text-gray-900"></i>
-                                </div>
-                                <span class="text-sm">Valid: <?php echo formatDate($promo['valid_from']); ?> - <?php echo formatDate($promo['valid_until']); ?></span>
-                            </div>
-                            <h3 class="text-2xl font-bold mb-2"><?php echo escape($promo['title']); ?></h3>
-                            <p class="text-lg mb-4"><?php echo escape($promo['description']); ?></p>
-                            <div class="text-6xl font-bold"><?php echo $promo['discount_value']; ?>%</div>
-                            <?php if ($promo['promo_code']): ?>
-                            <div class="mt-4 bg-white text-gray-900 inline-block px-4 py-2 rounded-lg font-bold">
-                                CODE: <?php echo $promo['promo_code']; ?>
-                            </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </section>
-    <?php endif; ?>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white pt-16 pb-8">
@@ -329,7 +254,6 @@ $promotions = $promotionsStmt->fetchAll();
                     <h4 class="font-bold text-lg mb-4">About</h4>
                     <ul class="space-y-2 text-gray-400">
                         <li><a href="#" class="hover:text-white transition">About Us</a></li>
-                        <li><a href="#" class="hover:text-white transition">Features</a></li>
                         <li><a href="#" class="hover:text-white transition">Careers</a></li>
                     </ul>
                 </div>
@@ -359,11 +283,5 @@ $promotions = $promotionsStmt->fetchAll();
             </div>
         </div>
     </footer>
-
-    <script>
-        function filterByCategory(category) {
-            window.location.href = 'hotels.php?category=' + category;
-        }
-    </script>
 </body>
 </html>

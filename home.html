@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonHeritage - Find Your Best Staycation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css"!important>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-black text-white sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <a href="home.html" class="flex items-center space-x-2">
+                        <i class="fas fa-moon text-2xl"></i>
+                        <span class="text-xl font-bold">MoonHeritage</span>
+                    </a>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="home.html" class="hover:text-gray-300 transition">Home</a>
+                        <a href="hotels.php" class="hover:text-gray-300 transition">Hotels</a>
+                        <a href="villas.php" class="hover:text-gray-300 transition">Villas</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative hidden md:block">
+                        <input type="text" placeholder="Search properties..." 
+                               class="bg-gray-800 text-white px-4 py-2 rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <button class="flex items-center space-x-2 hover:text-gray-300">
+                        <i class="fas fa-globe"></i>
+                    </button>
+                    <a href="login.php" class="hover:text-gray-300">Log In</a>
+                    <a href="signup.php" class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen bg-cover bg-center" style="background-image:linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),url('images/hero-bg.jpg');">
+        <div class="container mx-auto px-6 h-full flex items-center">
+            <div class="text-white max-w-4xl mt-5 inp-hero">
+                <h1 class="text-6xl font-bold mb-6">Find Your Best Staycation</h1>
+                
+                <!-- Search Box -->
+                <div class="bg-white rounded-lg shadow-2xl p-6 mt-8">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                        <div class="relative">
+                            <label class="text-gray-700 text-sm font-semibold mb-2 block">Location</label>
+                            <input type="text" placeholder="Add destination" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800">
+                            <i class="fas fa-map-marker-alt absolute right-3 top-11 text-gray-400"></i>
+                        </div>
+                        <div class="relative">
+                            <label class="text-gray-700 text-sm font-semibold mb-2 block">Check in/Check out Date</label>
+                            <input type="date" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800">
+                        </div>
+                        <div class="relative">
+                            <label class="text-gray-700 text-sm font-semibold mb-2 block">Guests and Rooms</label>
+                            <input type="text" placeholder="1 guest, 1 room" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800">
+                        </div>
+                        <div class="flex items-end">
+                            <button class="w-full bg-black text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                                Search <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-gray-700 text-sm font-semibold">Filter:</span>
+                        <button class="px-4 py-1 bg-blue-600 text-white text-sm rounded-full hover:bg-blue-700">Hotel</button>
+                        <button class="px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-300">Villa</button>
+                        <button class="px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-300">Apartment</button>
+                        <button class="px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-300">Resorts</button>
+                        <button class="px-4 py-1 bg-gray-200 text-gray-700 text-sm rounded-full hover:bg-gray-300">Cottages</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Discover Destinations -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-4">Discover your destination</h2>
+            <p class="text-gray-600 mb-8">Explore our wide range of property types for every travel experience.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="relative rounded-lg overflow-hidden shadow-lg cursor-pointer transform hover:scale-105 transition">
+                    <img src="images/villas.jpg" alt="Villas" class="w-full h-64 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h3 class="text-2xl font-bold">Villas</h3>
+                        <p class="text-sm">15,584 available</p>
+                    </div>
+                    <i class="fas fa-arrow-right absolute top-4 right-4 text-white text-xl"></i>
+                </div>
+                
+                <div class="relative rounded-lg overflow-hidden shadow-lg cursor-pointer transform hover:scale-105 transition">
+                    <img src="images/apartments.jpg" alt="Apartments" class="w-full h-64 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h3 class="text-2xl font-bold">Apartments</h3>
+                        <p class="text-sm">19,657 available</p>
+                    </div>
+                    <i class="fas fa-arrow-right absolute top-4 right-4 text-white text-xl"></i>
+                </div>
+                
+                <div class="relative rounded-lg overflow-hidden shadow-lg cursor-pointer transform hover:scale-105 transition">
+                    <img src="images/resorts.jpg" alt="Resorts" class="w-full h-64 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h3 class="text-2xl font-bold">Resorts</h3>
+                        <p class="text-sm">357 available</p>
+                    </div>
+                    <i class="fas fa-arrow-right absolute top-4 right-4 text-white text-xl"></i>
+                </div>
+                
+                <div class="relative rounded-lg overflow-hidden shadow-lg cursor-pointer transform hover:scale-105 transition">
+                    <img src="images/cottages.jpg" alt="Cottages" class="w-full h-64 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 text-white">
+                        <h3 class="text-2xl font-bold">Cottages</h3>
+                        <p class="text-sm">205 available</p>
+                    </div>
+                    <i class="fas fa-arrow-right absolute top-4 right-4 text-white text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Trending Hotels -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-4xl font-bold mb-2">Top trending hotel in worldwide</h2>
+                    <p class="text-gray-600">Discover the most trending hotels worldwide for an unforgettable experience.</p>
+                </div>
+                <a href="hotels.php" class="text-blue-600 hover:underline flex items-center">
+                    See All <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+
+            <!-- Filter Tags -->
+            <div class="flex gap-4 mb-8 overflow-x-auto pb-2">
+                <button class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 whitespace-nowrap">Resets</button>
+                <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 whitespace-nowrap">Japan</button>
+                <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 whitespace-nowrap">Italy</button>
+                <button class="px-6 py-2 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 whitespace-nowrap">Balitur</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Hotel Card 1 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
+                    <div class="relative">
+                        <img src="images/hotel1.jpg" alt="Hotel" class="w-full h-48 object-cover">
+                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Moonlight Majestic Hotel</h3>
+                        <p class="text-gray-600 text-sm mb-2"><i class="fas fa-map-marker-alt"></i> Mykanos</p>
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(1,456 Reviews)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-blue-600">$160</span>
+                                <span class="text-gray-500 text-sm">/night</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotel Card 2 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
+                    <div class="relative">
+                        <img src="images/hotel2.jpg" alt="Hotel" class="w-full h-48 object-cover">
+                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Elysee Retreat</h3>
+                        <p class="text-gray-600 text-sm mb-2"><i class="fas fa-map-marker-alt"></i> Paris</p>
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(891 Reviews)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-blue-600">$190</span>
+                                <span class="text-gray-500 text-sm">/night</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotel Card 3 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
+                    <div class="relative">
+                        <img src="images/hotel3.jpg" alt="Hotel" class="w-full h-48 object-cover">
+                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Bamboo Villa Inn</h3>
+                        <p class="text-gray-600 text-sm mb-2"><i class="fas fa-map-marker-alt"></i> Ubituborg</p>
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(2,123 Reviews)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-blue-600">$220</span>
+                                <span class="text-gray-500 text-sm">/night</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotel Card 4 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
+                    <div class="relative">
+                        <img src="images/hotel4.jpg" alt="Hotel" class="w-full h-48 object-cover">
+                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Sea Shore Lodge</h3>
+                        <p class="text-gray-600 text-sm mb-2"><i class="fas fa-map-marker-alt"></i> Centura</p>
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(3,865 Reviews)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-blue-600">$550</span>
+                                <span class="text-gray-500 text-sm">/night</span>
+                                <span class="text-gray-400 line-through text-sm ml-1">$785</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Most Visited Hotels -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold mb-4">Most visited hotel this month</h2>
+            <p class="text-gray-600 mb-8">Explore the exceptional accommodations that captured travelers' hearts this month.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <!-- Similar hotel cards as above -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
+                    <div class="relative">
+                        <img src="images/hotel5.jpg" alt="Hotel" class="w-full h-48 object-cover">
+                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Azure Oasis</h3>
+                        <p class="text-gray-600 text-sm mb-2"><i class="fas fa-map-marker-alt"></i> Maldives, Maldives</p>
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(987 Reviews)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-blue-600">$600</span>
+                                <span class="text-gray-500 text-sm">/night</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
+                    <div class="relative">
+                        <img src="images/hotel6.jpg" alt="Hotel" class="w-full h-48 object-cover">
+                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Descartt Heights</h3>
+                        <p class="text-gray-600 text-sm mb-2"><i class="fas fa-map-marker-alt"></i> Monte Liba</p>
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(654 Reviews)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-blue-600">$700</span>
+                                <span class="text-gray-500 text-sm">/night</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
+                    <div class="relative">
+                        <img src="images/hotel7.jpg" alt="Hotel" class="w-full h-48 object-cover">
+                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Majestic Serenity Palace</h3>
+                        <p class="text-gray-600 text-sm mb-2"><i class="fas fa-map-marker-alt"></i> Kerala, India</p>
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(2,210 Reviews)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-blue-600">$420</span>
+                                <span class="text-gray-500 text-sm">/night</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition">
+                    <div class="relative">
+                        <img src="images/hotel8.jpg" alt="Hotel" class="w-full h-48 object-cover">
+                        <button class="absolute top-3 right-3 bg-white rounded-full p-2 hover:bg-gray-100">
+                            <i class="far fa-heart text-gray-600"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg mb-1">Bella Vista</h3>
+                        <p class="text-gray-600 text-sm mb-2"><i class="fas fa-map-marker-alt"></i> Pugal Coast, Italy</p>
+                        <div class="flex items-center mb-3">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span class="text-gray-600 text-sm ml-2">(1,876 Reviews)</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-2xl font-bold text-blue-600">$450</span>
+                                <span class="text-gray-500 text-sm">/night</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-4xl font-bold">Get promo for a cheaper price</h2>
+                <a href="#" class="text-blue-600 hover:underline flex items-center">
+                    See All <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="relative rounded-lg overflow-hidden shadow-lg h-64">
+                    <img src="images/promo1.jpg" alt="Promo" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black to-transparent"></div>
+                    <div class="absolute inset-0 flex items-center p-8">
+                        <div class="text-white">
+                            <div class="flex items-center mb-2">
+                                <div class="bg-yellow-400 rounded-full p-3 mr-4">
+                                    <i class="fas fa-percent text-2xl text-gray-900"></i>
+                                </div>
+                                <span class="text-sm">Valid only: 25 Jun - 01 Oct 2025</span>
+                            </div>
+                            <h3 class="text-xl mb-2">Catch Discount of</h3>
+                            <h3 class="text-xl mb-2">Adorn Oasis Hotel</h3>
+                            <div class="text-6xl font-bold mb-4">50%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative rounded-lg overflow-hidden shadow-lg h-64">
+                    <img src="images/promo2.jpg" alt="Promo" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-black to-transparent"></div>
+                    <div class="absolute inset-0 flex items-center p-8">
+                        <div class="text-white">
+                            <div class="flex items-center mb-2">
+                                <div class="bg-yellow-400 rounded-full p-3 mr-4">
+                                    <i class="fas fa-gift text-2xl text-gray-900"></i>
+                                </div>
+                                <span class="text-sm">Valid only: 15 Jul - 20 Oct 2025</span>
+                            </div>
+                            <h3 class="text-xl mb-2">Christmas Deals</h3>
+                            <h3 class="text-xl mb-2">Just For You</h3>
+                            <div class="text-6xl font-bold mb-4">75%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Sections -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="relative rounded-lg overflow-hidden shadow-lg h-80">
+                    <img src="images/cta1.jpg" alt="CTA" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center p-8">
+                        <div class="text-white text-center">
+                            <h3 class="text-3xl font-bold mb-4">Explore more to get your</h3>
+                            <h3 class="text-3xl font-bold mb-4">comfort zone</h3>
+                            <p class="mb-6">Travel your perfect place with us.</p>
+                            <button class="bg-white text-gray-900 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                                Discover Now <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                            <div class="mt-6">
+                                <span class="text-4xl font-bold">1,764,980</span>
+                                <p class="text-sm">Hotels to discover</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative rounded-lg overflow-hidden shadow-lg h-80">
+                    <img src="images/cta2.jpg" alt="CTA" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center p-8">
+                        <div class="text-white text-center">
+                            <h3 class="text-3xl font-bold mb-4">Beyond accommodation, creating</h3>
+                            <h3 class="text-3xl font-bold mb-6">memories of a lifetime</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Brands -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-wrap justify-center items-center gap-12 opacity-60">
+                <img src="images/brand1.png" alt="TripAdvisor" class="h-8">
+                <img src="images/brand2.png" alt="Expedia" class="h-8">
+                <img src="images/brand3.png" alt="Booking.com" class="h-8">
+                <img src="images/brand4.png" alt="Airbnb" class="h-8">
+                <img src="images/brand5.png" alt="Agoda" class="h-8">
+                <img src="images/brand6.png" alt="Trivago" class="h-8">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-moon text-2xl"></i>
+                        <span class="text-xl font-bold">MoonHeritage</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">This website is actually created support the project and make travel more accessible to everyone.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-gray-700 transition">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-gray-700 transition">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-gray-700 transition">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-gray-700 transition">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-gray-700 transition">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">About</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition">Features</a></li>
+                        <li><a href="#" class="hover:text-white transition">News</a></li>
+                        <li><a href="#" class="hover:text-white transition">Careers</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Support</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white transition">Return</a></li>
+                        <li><a href="#" class="hover:text-white transition">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Get Updates</h4>
+                    <p class="text-gray-400 mb-4">Subscribe to our newsletter</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Enter your email" 
+                               class="flex-1 px-4 py-2 rounded-l-lg bg-gray-800 border border-gray-700 focus:outline-none focus:border-blue-500">
+                        <button class="bg-blue-600 px-6 py-2 rounded-r-lg hover:bg-blue-700 transition">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 MoonHeritage. All rights reserved.</p>
+                <div class="flex space-x-6 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

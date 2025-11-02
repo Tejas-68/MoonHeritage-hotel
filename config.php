@@ -1,19 +1,14 @@
 <?php
 /**
  * MoonHeritage - Database Configuration File
-* the glos bal; variable and the functions are in here 
  */
-
 
 if (!defined('MOONHERITAGE_ACCESS')) {
     define('MOONHERITAGE_ACCESS', true);
 }
 
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-
-
 date_default_timezone_set('Asia/Kolkata');
 
 // Database connection
@@ -25,38 +20,26 @@ define('DB_CHARSET', 'utf8mb4');
 
 // Site config
 define('SITE_NAME', 'MoonHeritage');
-define('SITE_URL', 'http://localhost/moonheritage/');
+define('SITE_URL', 'https://localhost:8080/moonheritage/');
 define('SITE_EMAIL', 'info@moonheritage.com');
 define('ADMIN_EMAIL', 'admin@moonheritage.com');
 
-// Security conf
+// Security config
 define('ENCRYPTION_KEY', 'your-secret-key-here-change-in-production');
-define('SESSION_LIFETIME', 3600); // 1 hour in seconds
+define('SESSION_LIFETIME', 3600);
 define('PASSWORD_MIN_LENGTH', 8);
 
-// File Upload confi
+// File Upload config
 define('UPLOAD_DIR', __DIR__ . '/uploads/');
-define('MAX_FILE_SIZE', 5242880); // 5MB in bytes
-define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+define('MAX_FILE_SIZE', 209715200);
+define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg']);
 
 define('ITEMS_PER_PAGE', 12);
 define('HOTELS_PER_PAGE', 12);
 define('REVIEWS_PER_PAGE', 10);
 
-// Currency
 define('DEFAULT_CURRENCY', 'Rs');
 define('CURRENCY_SYMBOL', '$');
-
-// Payment Gateway
-define('STRIPE_PUBLIC_KEY', 'pk_test_your_stripe_public_key');
-define('STRIPE_SECRET_KEY', 'sk_test_your_stripe_secret_key');
-
-// Email Config
-define('SMTP_HOST', 'smtp.gmail.com');
-define('SMTP_PORT', 587);
-define('SMTP_USERNAME', 'your-email@gmail.com');
-define('SMTP_PASSWORD', 'your-app-password');
-define('SMTP_ENCRYPTION', 'tls');
 
 // Database Class
 class Database {
@@ -97,18 +80,14 @@ class Database {
     }
 }
 
-
-/**
- * Geta f database connection
- */
 function getDB() {
     return Database::getInstance()->getConnection();
 }
 
-/**
- * Sanitize input data
- */
 function sanitize($data) {
+    if (is_array($data)) {
+        return array_map('sanitize', $data);
+    }
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
@@ -159,27 +138,14 @@ function generateRandomString($length = 32) {
     return bin2hex(random_bytes($length / 2));
 }
 
-/**
- * Hash password verification
- */
-// function hashPassword($password) {
-//     return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
-// }
-
-// /**
-//  * Verify password
-//  */
-// function verifyPassword($password, $hash) {
-//     return password_verify($password, $hash);
-// }
-//temporary direct password non encry[ted]
 function hashPassword($password) {
-    return $password; // plain text for testing only
+    return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 }
 
 function verifyPassword($password, $hash) {
-    return $password === $hash; // plain text check
+    return password_verify($password, $hash);
 }
+
 function validateEmail($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
@@ -344,15 +310,20 @@ function jsonResponse($data, $statusCode = 200) {
     exit();
 }
 
+// ✅ FIXED: PROPER CSRF TOKEN GENERATION
 function generateCSRFToken() {
-    if (!isset($_SESSION['csrf_token'])) {
+    if (!isset($_SESSION['csrf_token']) || empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
     return $_SESSION['csrf_token'];
 }
 
+// ✅ FIXED: PROPER CSRF TOKEN VERIFICATION
 function verifyCSRFToken($token) {
-    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+    if (!isset($_SESSION['csrf_token']) || empty($_SESSION['csrf_token'])) {
+        return false;
+    }
+    return hash_equals($_SESSION['csrf_token'], $token);
 }
 
 function escape($string) {
@@ -375,5 +346,4 @@ if (isset($_SESSION['user_agent']) && $_SESSION['user_agent'] !== ($_SERVER['HTT
     session_destroy();
     session_start();
 }
-
 ?>
