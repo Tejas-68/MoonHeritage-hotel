@@ -8,12 +8,12 @@ if (!isLoggedIn() || !isAdmin()) {
 
 $db = getDB();
 
-// Get filter parameters
+
 $role = sanitize($_GET['role'] ?? 'all');
 $status = sanitize($_GET['status'] ?? 'all');
 $search = sanitize($_GET['search'] ?? '');
 
-// Build query
+
 $where = ["1=1"];
 $params = [];
 
@@ -35,7 +35,7 @@ if ($search) {
 
 $whereClause = implode(' AND ', $where);
 
-// Get users
+
 $users = $db->prepare("
     SELECT u.*,
            (SELECT COUNT(*) FROM bookings WHERE user_id = u.id) as booking_count,
@@ -47,7 +47,7 @@ $users = $db->prepare("
 $users->execute($params);
 $allUsers = $users->fetchAll();
 
-// Get stats
+
 $stats = $db->query("
     SELECT 
         COUNT(CASE WHEN role = 'user' THEN 1 END) as total_users,
@@ -80,7 +80,7 @@ $stats = $db->query("
             <p class="text-gray-600">View and manage all registered users</p>
         </div>
 
-        <!-- Stats Cards -->
+        
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-blue-50 rounded-lg shadow-md p-6 border-l-4 border-blue-500">
                 <div class="flex items-center justify-between">
@@ -123,7 +123,7 @@ $stats = $db->query("
             </div>
         </div>
 
-        <!-- Filters -->
+        
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <form method="GET" class="flex flex-wrap gap-4">
                 <div class="flex-1 min-w-[200px]">
@@ -156,7 +156,7 @@ $stats = $db->query("
             </form>
         </div>
 
-        <!-- Users Table -->
+        
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full">
@@ -260,7 +260,7 @@ $stats = $db->query("
         </div>
     </div>
 
-    <!-- User Details Modal -->
+    
     <div id="userModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white">

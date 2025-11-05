@@ -4,11 +4,11 @@ require_once '../config.php';
 
 header('Content-Type: application/json');
 
-// Get JSON input
+
 $input = json_decode(file_get_contents('php://input'), true);
 $email = sanitize($input['email'] ?? '');
 
-// Validation
+
 if (empty($email)) {
     jsonResponse(['success' => false, 'message' => 'Email is required'], 400);
 }
@@ -20,7 +20,7 @@ if (!validateEmail($email)) {
 try {
     $db = getDB();
     
-    // Check if email already exists
+    
     $checkStmt = $db->prepare("SELECT id, status FROM newsletter_subscribers WHERE email = ?");
     $checkStmt->execute([$email]);
     $existing = $checkStmt->fetch();
@@ -32,7 +32,7 @@ try {
                 'message' => 'This email is already subscribed'
             ], 400);
         } else {
-            // Reactivate subscription
+            
             $updateStmt = $db->prepare("UPDATE newsletter_subscribers SET status = 'subscribed', subscribed_at = NOW() WHERE email = ?");
             $updateStmt->execute([$email]);
             
@@ -42,17 +42,17 @@ try {
             ]);
         }
     } else {
-        // Generate verification token
+        
         $verificationToken = generateRandomString(64);
         
-        // Insert new subscriber
+        
         $insertStmt = $db->prepare("
             INSERT INTO newsletter_subscribers (email, verification_token, subscribed_at) 
             VALUES (?, ?, NOW())
         ");
         $insertStmt->execute([$email, $verificationToken]);
         
-        // Send welcome email
+        
         $verificationLink = SITE_URL . "verify-newsletter.php?token=" . $verificationToken;
         $emailSubject = "Welcome to MoonHeritage Newsletter";
         $emailMessage = "
@@ -77,7 +77,7 @@ try {
         
         sendEmail($email, $emailSubject, $emailMessage);
         
-        // Log activity
+        
         if (isLoggedIn()) {
             logActivity(getUserId(), 'newsletter_subscribed', "Subscribed: $email");
         }

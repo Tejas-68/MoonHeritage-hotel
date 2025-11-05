@@ -1,7 +1,4 @@
-<?php
-/**
- * MoonHeritage - Database Configuration File
- */
+<?php 
 
 if (!defined('MOONHERITAGE_ACCESS')) {
     define('MOONHERITAGE_ACCESS', true);
@@ -9,39 +6,44 @@ if (!defined('MOONHERITAGE_ACCESS')) {
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
 date_default_timezone_set('Asia/Kolkata');
 
-// Database connection
+
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'moonheritage');
 define('DB_CHARSET', 'utf8mb4');
 
-// Site config
+
 define('SITE_NAME', 'MoonHeritage');
-define('SITE_URL', 'https://localhost:8080/moonheritage/');
+
+define('SITE_URL', 'http://localhost:8080/moonheritage/');
+
 define('SITE_EMAIL', 'info@moonheritage.com');
 define('ADMIN_EMAIL', 'admin@moonheritage.com');
 
-// Security config
+
 define('ENCRYPTION_KEY', 'your-secret-key-here-change-in-production');
-define('SESSION_LIFETIME', 3600);
+define('SESSION_LIFETIME', 3600); 
 define('PASSWORD_MIN_LENGTH', 8);
 
-// File Upload config
+
 define('UPLOAD_DIR', __DIR__ . '/uploads/');
-define('MAX_FILE_SIZE', 209715200);
-define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/jpg']);
+define('MAX_FILE_SIZE', 209715200); 
+define('ALLOWED_IMAGE_TYPES', ['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+
 
 define('ITEMS_PER_PAGE', 12);
 define('HOTELS_PER_PAGE', 12);
 define('REVIEWS_PER_PAGE', 10);
 
-define('DEFAULT_CURRENCY', 'Rs');
+
+define('DEFAULT_CURRENCY', 'USD');
 define('CURRENCY_SYMBOL', '$');
 
-// Database Class
+
 class Database {
     private static $instance = null;
     private $connection;
@@ -72,12 +74,6 @@ class Database {
     public function getConnection() {
         return $this->connection;
     }
-    
-    private function __clone() {}
-    
-    public function __wakeup() {
-        throw new Exception("Cannot unserialize singleton");
-    }
 }
 
 function getDB() {
@@ -85,9 +81,6 @@ function getDB() {
 }
 
 function sanitize($data) {
-    if (is_array($data)) {
-        return array_map('sanitize', $data);
-    }
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
@@ -138,6 +131,38 @@ function generateRandomString($length = 32) {
     return bin2hex(random_bytes($length / 2));
 }
 
+
+function getImageUrl($path) {
+    if (empty($path)) {
+        return SITE_URL . 'images/default-hotel.jpg';
+    }
+    
+    if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) {
+        return $path;
+    }
+    
+    $path = ltrim($path, '/');
+    
+    $imageUrl = SITE_URL . 'uploads/' . $path;
+    
+    
+    error_log("Image URL generated: " . $imageUrl);
+    
+    return $imageUrl;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 function hashPassword($password) {
     return password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 }
@@ -145,6 +170,7 @@ function hashPassword($password) {
 function verifyPassword($password, $hash) {
     return password_verify($password, $hash);
 }
+
 
 function validateEmail($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL);
@@ -158,7 +184,7 @@ function sendEmail($to, $subject, $message, $headers = []) {
         'MIME-Version' => '1.0',
         'Content-type' => 'text/html; charset=UTF-8'
     ];
-    
+
     $headers = array_merge($defaultHeaders, $headers);
     $headerString = '';
     
@@ -208,13 +234,6 @@ function deleteFile($path) {
         return unlink($fullPath);
     }
     return false;
-}
-
-function getImageUrl($path) {
-    if (empty($path)) {
-        return SITE_URL . 'images/default-hotel.jpg';
-    }
-    return SITE_URL . 'uploads/' . $path;
 }
 
 function generateSlug($string) {
@@ -310,25 +329,23 @@ function jsonResponse($data, $statusCode = 200) {
     exit();
 }
 
-// ✅ FIXED: PROPER CSRF TOKEN GENERATION
 function generateCSRFToken() {
-    if (!isset($_SESSION['csrf_token']) || empty($_SESSION['csrf_token'])) {
+    if (!isset($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
     return $_SESSION['csrf_token'];
 }
 
-// ✅ FIXED: PROPER CSRF TOKEN VERIFICATION
 function verifyCSRFToken($token) {
-    if (!isset($_SESSION['csrf_token']) || empty($_SESSION['csrf_token'])) {
-        return false;
-    }
-    return hash_equals($_SESSION['csrf_token'], $token);
+    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
 }
 
 function escape($string) {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
+
+
+
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

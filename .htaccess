@@ -1,15 +1,12 @@
-# Prevent direct access to config files
+# Preventing direct access to config files
 <Files "config.php">
     Order Allow,Deny
     Deny from all
 </Files>
 
-# Prevent directory listing
 Options -Indexes
 
-# Enable HTTPS redirect
 RewriteEngine On
 RewriteCond %{HTTPS} off
-# Don't force HTTPS on the local development host(s)
 RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

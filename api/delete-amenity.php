@@ -22,7 +22,7 @@ try {
     
     $db = getDB();
     
-    // Get amenity details for logging
+    
     $amenityStmt = $db->prepare("SELECT name FROM amenities WHERE id = ?");
     $amenityStmt->execute([$id]);
     $amenity = $amenityStmt->fetch();
@@ -31,7 +31,7 @@ try {
         jsonResponse(['success' => false, 'message' => 'Amenity not found'], 404);
     }
     
-    // Delete amenity (cascade will handle hotel_amenities)
+    
     $deleteStmt = $db->prepare("DELETE FROM amenities WHERE id = ?");
     $deleteStmt->execute([$id]);
     

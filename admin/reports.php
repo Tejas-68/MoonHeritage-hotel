@@ -8,11 +8,11 @@ if (!isLoggedIn() || !isAdmin()) {
 
 $db = getDB();
 
-// Get date range from request
-$startDate = sanitize($_GET['start_date'] ?? date('Y-m-01')); // First day of current month
-$endDate = sanitize($_GET['end_date'] ?? date('Y-m-d')); // Today
 
-// Revenue Statistics
+$startDate = sanitize($_GET['start_date'] ?? date('Y-m-01')); 
+$endDate = sanitize($_GET['end_date'] ?? date('Y-m-d')); 
+
+
 $revenueStats = $db->prepare("
     SELECT 
         COUNT(*) as total_bookings,
@@ -26,7 +26,7 @@ $revenueStats = $db->prepare("
 $revenueStats->execute([$startDate, $endDate . ' 23:59:59']);
 $revenue = $revenueStats->fetch();
 
-// Top Hotels by Revenue
+
 $topHotels = $db->prepare("
     SELECT h.name, h.city, h.country, h.category,
            COUNT(b.id) as booking_count,
@@ -40,7 +40,7 @@ $topHotels = $db->prepare("
 $topHotels->execute([$startDate, $endDate . ' 23:59:59']);
 $topHotelsData = $topHotels->fetchAll();
 
-// Daily Revenue Chart Data
+
 $dailyRevenue = $db->prepare("
     SELECT 
         DATE(created_at) as date,
@@ -63,7 +63,7 @@ foreach ($dailyData as $row) {
     $bookingCounts[] = $row['bookings'];
 }
 
-// Category Performance
+
 $categoryStats = $db->prepare("
     SELECT h.category,
            COUNT(b.id) as booking_count,
@@ -76,7 +76,7 @@ $categoryStats = $db->prepare("
 $categoryStats->execute([$startDate, $endDate . ' 23:59:59']);
 $categories = $categoryStats->fetchAll();
 
-// User Statistics
+
 $userStats = $db->query("
     SELECT 
         COUNT(*) as total_users,
@@ -86,7 +86,7 @@ $userStats = $db->query("
     WHERE role = 'user'
 ")->fetch();
 
-// Payment Method Distribution
+
 $paymentMethods = $db->prepare("
     SELECT payment_method, COUNT(*) as count, SUM(total_amount) as total
     FROM bookings
@@ -131,7 +131,7 @@ $paymentData = $paymentMethods->fetchAll();
             </button>
         </div>
 
-        <!-- Date Range Filter -->
+        
         <div class="bg-white rounded-lg shadow-md p-6 mb-6 no-print">
             <form method="GET" class="flex flex-wrap gap-4 items-end">
                 <div>
@@ -150,13 +150,13 @@ $paymentData = $paymentMethods->fetchAll();
             </form>
         </div>
 
-        <!-- Report Header -->
+        
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <h2 class="text-xl font-bold text-gray-800 mb-2">Performance Report</h2>
             <p class="text-gray-600">Period: <?php echo formatDate($startDate); ?> - <?php echo formatDate($endDate); ?></p>
         </div>
 
-        <!-- Revenue Stats Cards -->
+        
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex items-center justify-between mb-4">
@@ -199,22 +199,22 @@ $paymentData = $paymentMethods->fetchAll();
             </div>
         </div>
 
-        <!-- Charts -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <!-- Daily Revenue Chart -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Daily Revenue Trend</h3>
                 <canvas id="revenueChart"></canvas>
             </div>
 
-            <!-- Category Performance -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Revenue by Category</h3>
                 <canvas id="categoryChart"></canvas>
             </div>
         </div>
 
-        <!-- Top Hotels -->
+        
         <div class="bg-white rounded-lg shadow-md mb-8">
             <div class="p-6 border-b border-gray-200">
                 <h3 class="text-xl font-bold text-gray-800">Top Performing Properties</h3>
@@ -261,7 +261,7 @@ $paymentData = $paymentMethods->fetchAll();
             </div>
         </div>
 
-        <!-- Additional Stats -->
+        
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h3 class="text-lg font-bold text-gray-800 mb-4">User Statistics</h3>

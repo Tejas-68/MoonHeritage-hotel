@@ -8,7 +8,7 @@ if (!isLoggedIn() || !isAdmin()) {
 
 $db = getDB();
 
-// Get all amenities with usage count
+
 $amenities = $db->query("
     SELECT a.*, 
     (SELECT COUNT(*) FROM hotel_amenities WHERE amenity_id = a.id) as usage_count
@@ -44,7 +44,7 @@ $amenities = $db->query("
             </button>
         </div>
 
-        <!-- Amenities Grid -->
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <?php foreach ($amenities as $amenity): ?>
             <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition">
@@ -78,7 +78,7 @@ $amenities = $db->query("
         </div>
     </div>
 
-    <!-- Add/Edit Modal -->
+    
     <div id="amenityModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg max-w-md w-full">
             <div class="p-6 border-b border-gray-200 flex justify-between items-center">

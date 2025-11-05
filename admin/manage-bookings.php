@@ -8,11 +8,11 @@ if (!isLoggedIn() || !isAdmin()) {
 
 $db = getDB();
 
-// Get filter parameters
+
 $status = sanitize($_GET['status'] ?? 'all');
 $search = sanitize($_GET['search'] ?? '');
 
-// Build query
+
 $where = ["1=1"];
 $params = [];
 
@@ -29,7 +29,7 @@ if ($search) {
 
 $whereClause = implode(' AND ', $where);
 
-// Get bookings
+
 $bookings = $db->prepare("
     SELECT b.*, h.name as hotel_name, h.city, h.country,
            u.email as user_email, u.first_name, u.last_name, u.phone
@@ -42,7 +42,7 @@ $bookings = $db->prepare("
 $bookings->execute($params);
 $allBookings = $bookings->fetchAll();
 
-// Get stats
+
 $stats = $db->query("
     SELECT 
         COUNT(CASE WHEN booking_status = 'pending' THEN 1 END) as pending,
@@ -75,7 +75,7 @@ $stats = $db->query("
             <p class="text-gray-600">Review and manage all property bookings</p>
         </div>
 
-        <!-- Stats Cards -->
+        
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-yellow-50 rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
                 <div class="flex items-center justify-between">
@@ -118,7 +118,7 @@ $stats = $db->query("
             </div>
         </div>
 
-        <!-- Filters -->
+        
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
             <form method="GET" class="flex flex-wrap gap-4">
                 <div class="flex-1 min-w-[200px]">
@@ -144,7 +144,7 @@ $stats = $db->query("
             </form>
         </div>
 
-        <!-- Bookings Table -->
+        
         <div class="bg-white rounded-lg shadow-md overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full">
@@ -251,7 +251,7 @@ $stats = $db->query("
         </div>
     </div>
 
-    <!-- Booking Details Modal -->
+    
     <div id="bookingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white">

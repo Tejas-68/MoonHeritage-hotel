@@ -2,19 +2,19 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once 'config.php';
 
-// Check if user is logged in
+
 if (!isLoggedIn()) {
     redirect('login.php');
 }
 
-// Get booking number
+
 $bookingNumber = sanitize($_GET['booking'] ?? '');
 
 if (empty($bookingNumber)) {
-    redirect('home.html');
+    redirect('index.php');
 }
 
-// Fetch booking details
+
 $db = getDB();
 $stmt = $db->prepare("
     SELECT b.*, h.name as hotel_name, h.address, h.city, h.country, 
@@ -29,10 +29,10 @@ $stmt->execute([$bookingNumber, getUserId()]);
 $booking = $stmt->fetch();
 
 if (!$booking) {
-    redirect('home.html');
+    redirect('index.php');
 }
 
-// Calculate nights
+
 $checkIn = new DateTime($booking['check_in_date']);
 $checkOut = new DateTime($booking['check_out_date']);
 $nights = $checkIn->diff($checkOut)->days;
@@ -61,11 +61,11 @@ $nights = $checkIn->diff($checkOut)->days;
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation -->
+    
     <nav class="bg-gray-900 text-white sticky top-0 z-50 shadow-lg no-print">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
-                <a href="home.html" class="flex items-center space-x-2">
+                <a href="index.php" class="flex items-center space-x-2">
                     <i class="fas fa-moon text-2xl"></i>
                     <span class="text-xl font-bold">MoonHeritage</span>
                 </a>
@@ -79,10 +79,10 @@ $nights = $checkIn->diff($checkOut)->days;
         </div>
     </nav>
 
-    <!-- Success Message -->
+    
     <section class="py-12">
         <div class="container mx-auto px-6 max-w-4xl">
-            <!-- Success Card -->
+            
             <div class="bg-white rounded-2xl shadow-2xl overflow-hidden mb-8 fade-in">
                 <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-8 text-center">
                     <div class="inline-block bg-white rounded-full p-4 mb-4 checkmark-animation">
@@ -92,9 +92,9 @@ $nights = $checkIn->diff($checkOut)->days;
                     <p class="text-xl opacity-90">Your reservation has been successfully completed</p>
                 </div>
 
-                <!-- Booking Details -->
+                
                 <div class="p-8">
-                    <!-- Booking Number -->
+                    
                     <div class="text-center mb-8 pb-8 border-b">
                         <p class="text-gray-600 mb-2">Booking Reference</p>
                         <h2 class="text-3xl font-bold text-blue-600"><?php echo escape($booking['booking_number']); ?></h2>
@@ -104,7 +104,7 @@ $nights = $checkIn->diff($checkOut)->days;
                         </p>
                     </div>
 
-                    <!-- Hotel Information -->
+                    
                     <div class="mb-8">
                         <h3 class="text-xl font-bold mb-4">Hotel Information</h3>
                         <div class="flex gap-4 bg-gray-50 p-4 rounded-lg">
@@ -125,7 +125,7 @@ $nights = $checkIn->diff($checkOut)->days;
                         </div>
                     </div>
 
-                    <!-- Booking Details Grid -->
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <div class="bg-blue-50 p-4 rounded-lg">
                             <div class="flex items-center mb-2">
@@ -173,7 +173,7 @@ $nights = $checkIn->diff($checkOut)->days;
                         </div>
                     </div>
 
-                    <!-- Guest Information -->
+                    
                     <div class="mb-8 pb-8 border-b">
                         <h3 class="text-xl font-bold mb-4">Guest Information</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -205,7 +205,7 @@ $nights = $checkIn->diff($checkOut)->days;
                         <?php endif; ?>
                     </div>
 
-                    <!-- Price Breakdown -->
+                    
                     <div class="mb-8">
                         <h3 class="text-xl font-bold mb-4">Payment Summary</h3>
                         <div class="bg-gray-50 p-6 rounded-lg">
@@ -245,7 +245,7 @@ $nights = $checkIn->diff($checkOut)->days;
                         </div>
                     </div>
 
-                    <!-- Important Information -->
+                    
                     <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-8">
                         <div class="flex">
                             <div class="flex-shrink-0">
@@ -263,7 +263,7 @@ $nights = $checkIn->diff($checkOut)->days;
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
+                    
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 no-print">
                         <button onclick="window.print()" 
                                 class="bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition font-semibold">
@@ -281,7 +281,7 @@ $nights = $checkIn->diff($checkOut)->days;
                 </div>
             </div>
 
-            <!-- What's Next -->
+            
             <div class="bg-white rounded-lg shadow-md p-6 no-print">
                 <h3 class="text-xl font-bold mb-4">What's Next?</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -309,9 +309,9 @@ $nights = $checkIn->diff($checkOut)->days;
                 </div>
             </div>
 
-            <!-- Back to Home -->
+            
             <div class="text-center mt-8 no-print">
-                <a href="home.html" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
+                <a href="index.php" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition font-semibold">
                     <i class="fas fa-home mr-2"></i>Back to Home
                 </a>
             </div>

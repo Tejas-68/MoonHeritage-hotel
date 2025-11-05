@@ -2,25 +2,25 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once 'config.php';
 
-// ============================================
-// FIX 1: ADD DEBUGGING AT THE VERY TOP
-// ============================================
+
+
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// DEBUG: Log what's being received
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     error_log("POST DATA RECEIVED: " . print_r($_POST, true));
     error_log("confirm_booking isset: " . (isset($_POST['confirm_booking']) ? 'YES' : 'NO'));
 }
 
-// Check if user is logged in
+
 if (!isLoggedIn()) {
     $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
     redirect('login.php');
 }
 
-// Get booking details from POST/GET
+
 $hotelId = (int)($_POST['hotel_id'] ?? $_GET['hotel_id'] ?? 0);
 $checkIn = sanitize($_POST['check_in'] ?? $_GET['check_in'] ?? '');
 $checkOut = sanitize($_POST['check_out'] ?? $_GET['check_out'] ?? '');
@@ -28,12 +28,12 @@ $adults = (int)($_POST['adults'] ?? $_GET['adults'] ?? 1);
 $children = (int)($_POST['children'] ?? $_GET['children'] ?? 0);
 $rooms = (int)($_POST['rooms'] ?? $_GET['rooms'] ?? 1);
 
-// Validate inputs
+
 if (!$hotelId || !$checkIn || !$checkOut) {
     redirect('hotels.php');
 }
 
-// Fetch hotel details
+
 $db = getDB();
 $stmt = $db->prepare("SELECT * FROM hotels WHERE id = ? AND status = 'active'");
 $stmt->execute([$hotelId]);
@@ -43,7 +43,7 @@ if (!$hotel) {
     redirect('hotels.php');
 }
 
-// Calculate nights
+
 $checkInDate = new DateTime($checkIn);
 $checkOutDate = new DateTime($checkOut);
 $nights = $checkInDate->diff($checkOutDate)->days;
@@ -52,25 +52,25 @@ if ($nights <= 0) {
     redirect('hotel-details.php?slug=' . $hotel['slug']);
 }
 
-// Calculate pricing
+
 $subtotal = $hotel['price_per_night'] * $nights * $rooms;
 $taxPercentage = (float)getSetting('booking_tax_percentage', 10);
 $taxAmount = $subtotal * ($taxPercentage / 100);
 $totalAmount = $subtotal + $taxAmount;
 
-// ============================================
-// FIX 2: SIMPLIFIED BOOKING PROCESSING
-// ============================================
+
+
+
 $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
-    // DEBUG: Show what we received
+    
     error_log("=== BOOKING FORM SUBMITTED ===");
     error_log("POST keys: " . implode(", ", array_keys($_POST)));
     
-    // Check if this is the booking confirmation (not just the form loading)
+    
     if (isset($_POST['confirm_booking']) || isset($_POST['first_name'])) {
         
         error_log("Processing booking...");
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $specialRequests = sanitize($_POST['special_requests'] ?? '');
         $paymentMethod = sanitize($_POST['payment_method'] ?? 'credit_card');
         
-        // Validation
+        
         if (empty($firstName) || empty($lastName) || empty($email) || empty($phone)) {
             $error = 'Please fill in all required fields';
             error_log("Validation failed: Missing required fields");
@@ -96,12 +96,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $db->beginTransaction();
                 
-                // Generate unique booking number
+                
                 $bookingNumber = 'MH' . date('Ymd') . rand(1000, 9999);
                 
                 error_log("Generated booking number: " . $bookingNumber);
                 
-                // Insert booking
+                
                 $insertStmt = $db->prepare("
                     INSERT INTO bookings (
                         booking_number, user_id, hotel_id, 
@@ -137,11 +137,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $bookingId = $db->lastInsertId();
                 error_log("Booking created with ID: " . $bookingId);
                 
-                // Update hotel availability
+                
                 $updateStmt = $db->prepare("UPDATE hotels SET available_rooms = available_rooms - ? WHERE id = ?");
                 $updateStmt->execute([$rooms, $hotelId]);
                 
-                // Log activity
+                
                 logActivity(getUserId(), 'booking_created', "Booking #$bookingNumber created");
                 
                 $db->commit();
@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 error_log("=== BOOKING SUCCESS - REDIRECTING ===");
                 error_log("Redirect to: booking-confirmation.php?booking=" . $bookingNumber);
                 
-                // CRITICAL: Redirect immediately with proper headers
+                
                 header("Location: booking-confirmation.php?booking=" . urlencode($bookingNumber), true, 302);
                 exit();
                 
@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get user details for pre-filling
+
 $user = getCurrentUser();
 ?>
 <!DOCTYPE html>
@@ -179,7 +179,7 @@ $user = getCurrentUser();
 </head>
 <body class="bg-gray-50">
     
-    <!-- Navigation (simplified) -->
+    
     <nav class="bg-gray-900 text-white sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <a href="index.php" class="text-xl font-bold">🌙 MoonHeritage</a>
@@ -198,11 +198,11 @@ $user = getCurrentUser();
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 
-                <!-- BOOKING FORM -->
+                
                 <div class="lg:col-span-2">
                     <form method="POST" action="booking.php" id="bookingForm">
                         
-                        <!-- CRITICAL: Keep all hidden fields -->
+                        
                         <input type="hidden" name="hotel_id" value="<?php echo $hotelId; ?>">
                         <input type="hidden" name="check_in" value="<?php echo $checkIn; ?>">
                         <input type="hidden" name="check_out" value="<?php echo $checkOut; ?>">
@@ -210,7 +210,7 @@ $user = getCurrentUser();
                         <input type="hidden" name="children" value="<?php echo $children; ?>">
                         <input type="hidden" name="rooms" value="<?php echo $rooms; ?>">
                         
-                        <!-- Guest Information -->
+                        
                         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                             <h2 class="text-2xl font-bold mb-6">Guest Information</h2>
                             
@@ -251,7 +251,7 @@ $user = getCurrentUser();
                             </div>
                         </div>
 
-                        <!-- Payment Method -->
+                        
                         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                             <h2 class="text-2xl font-bold mb-6">Payment Method</h2>
                             <label class="flex items-center p-4 border-2 rounded-lg mb-2 cursor-pointer">
@@ -268,7 +268,7 @@ $user = getCurrentUser();
                             </label>
                         </div>
 
-                        <!-- Terms -->
+                        
                         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                             <label class="flex items-start cursor-pointer">
                                 <input type="checkbox" id="terms" required class="mt-1 mr-3">
@@ -276,7 +276,7 @@ $user = getCurrentUser();
                             </label>
                         </div>
 
-                        <!-- CRITICAL: Submit button -->
+                        
                         <button type="submit" name="confirm_booking" value="1"
                                 class="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 font-semibold text-lg">
                             <i class="fas fa-check-circle mr-2"></i>Confirm Booking
@@ -284,7 +284,7 @@ $user = getCurrentUser();
                     </form>
                 </div>
 
-                <!-- Booking Summary -->
+                
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
                         <h3 class="text-xl font-bold mb-4">Booking Summary</h3>
@@ -324,7 +324,7 @@ $user = getCurrentUser();
         </div>
     </section>
 
-    <!-- FIXED JAVASCRIPT -->
+    
     <script>
         console.log('✅ Booking page loaded');
         

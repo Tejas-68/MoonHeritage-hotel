@@ -2,17 +2,17 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once 'config.php';
 
-// Redirect if already logged in
+
 if (isLoggedIn()) {
     redirect('index.php');
 }
 
-// Handle signup form submission
+
 $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Verify CSRF token
+    
     if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
         $error = 'Invalid request. Please try again.';
     } else {
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $phone = sanitize($_POST['phone'] ?? '');
         $agreeTerms = isset($_POST['agree_terms']);
         
-        // Validation
+        
         if (empty($username) || empty($email) || empty($password) || empty($confirmPassword)) {
             $error = 'Please fill in all required fields';
         } elseif (!validateEmail($email)) {
@@ -44,19 +44,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $db = getDB();
                 
-                // Check if username already exists
+                
                 $stmt = $db->prepare("SELECT id FROM users WHERE username = ?");
                 $stmt->execute([$username]);
                 if ($stmt->fetch()) {
                     $error = 'Username already taken';
                 } else {
-                    // Check if email already exists
+                    
                     $stmt = $db->prepare("SELECT id FROM users WHERE email = ?");
                     $stmt->execute([$email]);
                     if ($stmt->fetch()) {
                         $error = 'Email already registered';
                     } else {
-                        // Create new user
+                        
                         $hashedPassword = hashPassword($password);
                         $verificationToken = generateRandomString(64);
                         
@@ -65,10 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if ($stmt->execute([$username, $email, $hashedPassword, $firstName, $lastName, $phone, $verificationToken])) {
                             $userId = $db->lastInsertId();
                             
-                            // Log activity
+                            
                             logActivity($userId, 'registration', 'New user registered');
                             
-                            // Send verification email (simplified version)
+                            
                             $verificationLink = SITE_URL . "verify-email.php?token=" . $verificationToken;
                             $emailSubject = "Welcome to MoonHeritage - Verify Your Email";
                             $emailMessage = "
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             
                             $success = 'Registration successful! Please check your email to verify your account.';
                             
-                            // Auto-login after registration (optional)
+                            
                             $_SESSION['user_id'] = $userId;
                             $_SESSION['username'] = $username;
                             $_SESSION['email'] = $email;
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $_SESSION['first_name'] = $firstName;
                             $_SESSION['last_name'] = $lastName;
                             
-                            // Redirect after 2 seconds
+                            
                             header("Refresh: 2; url=index.php");
                         } else {
                             $error = 'Registration failed. Please try again.';
@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="signup-bg min-h-screen flex items-center justify-center p-4">
     <div class="container mx-auto max-w-2xl">
-        <!-- Logo -->
+        
         <div class="text-center mb-8">
             <a href="index.php" class="inline-flex items-center space-x-2 text-white">
                 <i class="fas fa-moon text-4xl"></i>
@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </a>
         </div>
 
-        <!-- Signup Card -->
+        
         <div class="glass-effect rounded-2xl shadow-2xl p-8">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h2>
@@ -173,12 +173,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
 
-            <!-- Signup Form -->
+            
             <form method="POST" action="" id="signupForm">
                 <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <!-- First Name -->
+                    
                     <div>
                         <label for="first_name" class="block text-gray-700 font-semibold mb-2">
                             <i class="fas fa-user mr-2"></i>First Name
@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                placeholder="John">
                     </div>
 
-                    <!-- Last Name -->
+                    
                     <div>
                         <label for="last_name" class="block text-gray-700 font-semibold mb-2">
                             <i class="fas fa-user mr-2"></i>Last Name
@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <!-- Username -->
+                
                 <div class="mb-6">
                     <label for="username" class="block text-gray-700 font-semibold mb-2">
                         <i class="fas fa-at mr-2"></i>Username <span class="text-red-500">*</span>
@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p class="text-gray-500 text-sm mt-1">Must be at least 3 characters</p>
                 </div>
 
-                <!-- Email -->
+                
                 <div class="mb-6">
                     <label for="email" class="block text-gray-700 font-semibold mb-2">
                         <i class="fas fa-envelope mr-2"></i>Email Address <span class="text-red-500">*</span>
@@ -224,7 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                            placeholder="john@example.com">
                 </div>
 
-                <!-- Phone -->
+                
                 <div class="mb-6">
                     <label for="phone" class="block text-gray-700 font-semibold mb-2">
                         <i class="fas fa-phone mr-2"></i>Phone Number
@@ -236,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <!-- Password -->
+                    
                     <div>
                         <label for="password" class="block text-gray-700 font-semibold mb-2">
                             <i class="fas fa-lock mr-2"></i>Password <span class="text-red-500">*</span>
@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
 
-                    <!-- Confirm Password -->
+                    
                     <div>
                         <label for="confirm_password" class="block text-gray-700 font-semibold mb-2">
                             <i class="fas fa-lock mr-2"></i>Confirm Password <span class="text-red-500">*</span>
@@ -273,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <!-- Password Requirements -->
+                
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                     <p class="text-sm text-gray-700 font-semibold mb-2">Password must contain:</p>
                     <ul class="text-sm text-gray-600 space-y-1">
@@ -296,7 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </ul>
                 </div>
 
-                <!-- Terms and Conditions -->
+                
                 <div class="mb-6">
                     <label class="flex items-start cursor-pointer">
                         <input type="checkbox" name="agree_terms" required class="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
@@ -307,14 +307,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </label>
                 </div>
 
-                <!-- Submit Button -->
+                
                 <button type="submit" 
                         class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105 shadow-lg">
                     <i class="fas fa-user-plus mr-2"></i>Create Account
                 </button>
             </form>
 
-            <!-- Login Link -->
+            
             <div class="text-center">
                 <p class="text-gray-600">
                     Already have an account? 
@@ -325,7 +325,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <!-- Back to Home -->
+        
         <div class="text-center mt-6">
             <a href="index.php" class="text-white hover:text-gray-200 flex items-center justify-center space-x-2">
                 <i class="fas fa-arrow-left"></i>

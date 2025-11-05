@@ -2,12 +2,12 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once 'config.php';
 
-// Redirect if already logged in
+
 if (isLoggedIn()) {
     redirect('index.php');
 }
 
-// Handle login form submission
+
 $error = '';
 $success = '';
 
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $stmt->fetch();
             
             if ($user && verifyPassword($password, $user['password'])) {
-                // Set session variables
+                
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['email'] = $user['email'];
@@ -34,22 +34,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['first_name'] = $user['first_name'];
                 $_SESSION['last_name'] = $user['last_name'];
                 
-                // Update last login
+                
                 $updateStmt = $db->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
                 $updateStmt->execute([$user['id']]);
                 
-                // Log activity
+                
                 logActivity($user['id'], 'login', 'User logged in');
                 
-                // Set remember me cookie
+                
                 if ($remember) {
                     $token = generateRandomString(64);
-                    setcookie('remember_token', $token, time() + (86400 * 30), '/'); // 30 days
+                    setcookie('remember_token', $token, time() + (86400 * 30), '/'); 
                     
-                    // Store token in database (you'd need a remember_tokens table)
+                    
                 }
                 
-                // Redirect based on role
+                
                 if ($user['role'] === 'admin') {
                     header('Location: /MoonHeritage/admin/dashboard.php');
                 } else {
@@ -87,15 +87,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="login-bg min-h-screen flex items-center justify-center p-4">
     <div class="container mx-auto max-w-md">
-        <!-- Logo -->
+        
         <div class="text-center mb-8">
-            <a href="index.html" class="inline-flex items-center space-x-2 text-white">
+            <a href="index.php" class="inline-flex items-center space-x-2 text-white">
                 <i class="fas fa-moon text-4xl"></i>
                 <span class="text-3xl font-bold">MoonHeritage</span>
             </a>
         </div>
 
-        <!-- Login Card -->
+        
         <div class="glass-effect rounded-2xl shadow-2xl p-8">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
@@ -116,11 +116,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
 
-            <!-- Login Form -->
+            
             <form method="POST" action="" id="loginForm">
                 <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                 
-                <!-- Email Field -->
+                
                 <div class="mb-6">
                     <label for="email" class="block text-gray-700 font-semibold mb-2">
                         <i class="fas fa-envelope mr-2"></i>Email Address
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                            placeholder="Enter your email">
                 </div>
 
-                <!-- Password Field -->
+                
                 <div class="mb-6">
                     <label for="password" class="block text-gray-700 font-semibold mb-2">
                         <i class="fas fa-lock mr-2"></i>Password
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                <!-- Remember Me & Forgot Password -->
+                
                 <div class="flex items-center justify-between mb-6">
                     <label class="flex items-center cursor-pointer">
                         <input type="checkbox" name="remember" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
@@ -158,14 +158,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </a>
                 </div>
 
-                <!-- Login Button -->
+                
                 <button type="submit" 
                         class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105 shadow-lg">
                     <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                 </button>
             </form>
 
-            <!-- Divider -->
+            
             <div class="relative my-8">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-300"></div>
@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <!-- Social Login -->
+            
             <div class="grid grid-cols-3 gap-3 mb-6">
                 <button type="button" 
                         class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </div>
 
-            <!-- Sign Up Link -->
+            
             <div class="text-center">
                 <p class="text-gray-600">
                     Don't have an account? 
@@ -202,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        <!-- Back to Home -->
+        
         <div class="text-center mt-6">
             <a href="index.php" class="text-white hover:text-gray-200 flex items-center justify-center space-x-2">
                 <i class="fas fa-arrow-left"></i>

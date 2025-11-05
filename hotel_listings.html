@@ -19,16 +19,16 @@
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation -->
+    
     <nav class="bg-gray-900 text-white py-4 px-6 sticky top-0 z-50 shadow-lg">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-8">
-                <a href="index.html" class="flex items-center space-x-2">
+                <a href="index.php" class="flex items-center space-x-2">
                     <i class="fas fa-moon text-2xl text-blue-400" aria-hidden="true"></i>
                     <span class="text-xl font-bold">MoonHeritage</span>
                 </a>
                 <div class="hidden md:flex space-x-6">
-                    <a href="index.html" class="hover:text-blue-400">Home</a>
+                    <a href="index.php" class="hover:text-blue-400">Home</a>
                     <a href="hotels.html" class="text-blue-400">Hotel</a>
                     <a href="#" class="hover:text-blue-400">Flight</a>
                     <a href="#" class="hover:text-blue-400">Train</a>
@@ -45,7 +45,7 @@
         </div>
     </nav>
 
-    <!-- Search Bar -->
+    
     <div class="bg-white shadow-md py-6 px-6">
         <div class="max-w-7xl mx-auto">
             <form class="grid md:grid-cols-5 gap-4" onsubmit="event.preventDefault();">
@@ -78,15 +78,15 @@
         </div>
     </div>
 
-    <!-- Main Content -->
+    
     <div class="max-w-7xl mx-auto px-6 py-8">
         <div class="flex flex-col md:flex-row gap-8">
-            <!-- Filters Sidebar -->
+            
             <aside class="w-full md:w-64 flex-shrink-0">
                 <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24">
                     <h3 class="font-bold text-xl mb-4">Filters</h3>
                     
-                    <!-- Price Range -->
+                    
                     <div class="mb-6">
                         <h4 class="font-semibold mb-3">Price Range</h4>
                         <input type="range" min="0" max="1000" value="150" class="mb-2" id="priceRange">
@@ -97,7 +97,7 @@
                         </div>
                     </div>
 
-                    <!-- Rating -->
+                    
                     <div class="mb-6">
                         <h4 class="font-semibold mb-3">Rating</h4>
                         <div class="space-y-2">
@@ -122,7 +122,7 @@
                         </div>
                     </div>
 
-                    <!-- Amenities -->
+                    
                     <div class="mb-6">
                         <h4 class="font-semibold mb-3">Amenities</h4>
                         <div class="space-y-2">
@@ -153,7 +153,7 @@
                         </div>
                     </div>
 
-                    <!-- Property Type -->
+                    
                     <div class="mb-6">
                         <h4 class="font-semibold mb-3">Property Type</h4>
                         <div class="space-y-2">
@@ -182,7 +182,7 @@
                 </div>
             </aside>
 
-            <!-- Hotel Listings -->
+            
             <main class="flex-1">
                 <div class="flex justify-between items-center mb-6">
                     <div>
@@ -197,9 +197,9 @@
                     </select>
                 </div>
 
-                <!-- Hotel Cards -->
+                
                 <div class="space-y-6">
-                    <!-- Hotel Card 1 -->
+                    
                     <article class="card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
                         <div class="md:w-80 h-64 md:h-auto bg-gradient-to-br from-blue-400 to-purple-600 flex-shrink-0" role="img" aria-label="Mesastila Resort image"></div>
                         <div class="flex-1 p-6">
@@ -236,7 +236,7 @@
                         </div>
                     </article>
 
-                    <!-- Hotel Card 2 -->
+                    
                     <article class="card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
                         <div class="md:w-80 h-64 md:h-auto bg-gradient-to-br from-amber-400 to-red-600 flex-shrink-0" role="img" aria-label="Sandhya Villa Inn image"></div>
                         <div class="flex-1 p-6">
@@ -273,7 +273,7 @@
                         </div>
                     </article>
 
-                    <!-- Hotel Card 3 -->
+                    
                     <article class="card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
                         <div class="md:w-80 h-64 md:h-auto bg-gradient-to-br from-teal-400 to-blue-600 flex-shrink-0" role="img" aria-label="Oceanid Heights Resort image"></div>
                         <div class="flex-1 p-6">
@@ -311,7 +311,7 @@
                         </div>
                     </article>
 
-                    <!-- Hotel Card 4 -->
+                    
                     <article class="card bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
                         <div class="md:w-80 h-64 md:h-auto bg-gradient-to-br from-pink-400 to-rose-600 flex-shrink-0" role="img" aria-label="Elonas Retreat Villa image"></div>
                         <div class="flex-1 p-6">
@@ -349,7 +349,7 @@
                     </article>
                 </div>
 
-                <!-- Pagination -->
+                
                 <nav class="flex justify-center items-center space-x-2 mt-8" aria-label="Pagination">
                     <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100" aria-label="Previous page">
                         <i class="fas fa-chevron-left" aria-hidden="true"></i>
@@ -367,7 +367,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    
     <footer class="bg-gray-900 text-white py-12 px-6 mt-16">
         <div class="max-w-7xl mx-auto">
             <div class="grid md:grid-cols-5 gap-8 mb-8">
@@ -420,7 +420,7 @@
     </footer>
 
     <script>
-        // Price range slider
+        
         const priceRange = document.getElementById('priceRange');
         const priceValue = document.getElementById('priceValue');
 
@@ -430,13 +430,13 @@
 
         priceRange.addEventListener('input', function() {
             updatePriceValue(this.value);
-            // optionally filter visible cards by price here
+            
         });
 
-        // Initialize displayed value
+        
         updatePriceValue(priceRange.value);
 
-        // Heart (favorite) toggle
+        
         document.querySelectorAll('.fav-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -454,9 +454,9 @@
             });
         });
 
-        // Example: Search button - demonstrates capturing inputs (no backend)
+        
         document.getElementById('searchBtn').addEventListener('click', function(e) {
-            // Values available if you want to implement filtering or send to server
+            
             const query = {
                 location: document.getElementById('locationInput').value,
                 checkin: document.getElementById('checkin').value,
@@ -465,7 +465,7 @@
                 maxPrice: document.getElementById('priceRange').value
             };
             console.log('Search pressed, query:', query);
-            // Add your filtering logic here.
+            
         });
     </script>
 </body>

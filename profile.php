@@ -2,7 +2,7 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once 'config.php';
 
-// Redirect if not logged in
+
 if (!isLoggedIn()) {
     redirect('login.php');
 }
@@ -11,7 +11,7 @@ $user = getCurrentUser();
 $db = getDB();
 $uid = getUserId();
 
-// Helper for safe badge classes (map status -> tailwind color)
+
 function bookingBadgeClasses(string $status): array {
     $status = strtolower($status);
     switch ($status) {
@@ -30,7 +30,7 @@ function bookingBadgeClasses(string $status): array {
 $message = '';
 $messageType = '';
 
-// Fetch bookings (latest 10)
+
 try {
     $bookingsStmt = $db->prepare("
         SELECT b.*, h.name as hotel_name, h.city, h.country, h.main_image
@@ -47,7 +47,7 @@ try {
     $bookings = [];
 }
 
-// Fetch wishlist
+
 try {
     $wishlistStmt = $db->prepare("
         SELECT h.*, w.created_at as added_date
@@ -63,7 +63,7 @@ try {
     $wishlist = [];
 }
 
-// Fetch stats
+
 try {
     $statsStmt = $db->prepare("
         SELECT 
@@ -94,7 +94,7 @@ try {
     ];
 }
 
-// Handle profile update
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     $firstName = sanitize($_POST['first_name'] ?? '');
     $lastName = sanitize($_POST['last_name'] ?? '');
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         ");
         $updateStmt->execute([$firstName, $lastName, $phone, $address, $city, $country, $postalCode, $uid]);
 
-        // Update session copies (if your app relies on them)
+        
         $_SESSION['first_name'] = $firstName;
         $_SESSION['last_name'] = $lastName;
 
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         $message = 'Profile updated successfully!';
         $messageType = 'success';
 
-        // Refresh user data
+        
         $user = getCurrentUser();
     } catch (PDOException $e) {
         error_log("Profile update failed: " . $e->getMessage());
@@ -130,14 +130,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     }
 }
 
-// Get current tab safely
+
 $activeTab = sanitize($_GET['tab'] ?? 'dashboard');
 $allowedTabs = ['dashboard', 'bookings', 'wishlist', 'settings'];
 if (!in_array($activeTab, $allowedTabs, true)) {
     $activeTab = 'dashboard';
 }
 
-// Small helper to render safe message box classes
+
 function messageBoxClasses(string $type): string {
     if ($type === 'success') return 'mb-6 bg-green-100 border border-green-400 text-green-700';
     if ($type === 'error') return 'mb-6 bg-red-100 border border-red-400 text-red-700';
@@ -155,11 +155,11 @@ function messageBoxClasses(string $type): string {
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation -->
+    
     <nav class="bg-gray-900 text-white sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
-                <a href="index.html" class="flex items-center space-x-2">
+                <a href="index.php" class="flex items-center space-x-2">
                     <i class="fas fa-moon text-2xl"></i>
                     <span class="text-xl font-bold">MoonHeritage</span>
                 </a>
@@ -174,7 +174,7 @@ function messageBoxClasses(string $type): string {
         </div>
     </nav>
 
-    <!-- Page Header -->
+    
     <section class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-12">
         <div class="container mx-auto px-6">
             <div class="flex items-center justify-between">
@@ -192,7 +192,7 @@ function messageBoxClasses(string $type): string {
         </div>
     </section>
 
-    <!-- Main Content -->
+    
     <section class="py-8">
         <div class="container mx-auto px-6">
             <?php if ($message): ?>
@@ -203,10 +203,10 @@ function messageBoxClasses(string $type): string {
             <?php endif; ?>
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                <!-- Sidebar -->
+                
                 <aside class="lg:col-span-1">
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <!-- Profile Picture -->
+                        
                         <div class="p-6 text-center bg-gradient-to-b from-blue-50 to-white">
                             <div class="w-24 h-24 bg-blue-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">
                                 <?php echo strtoupper(substr($user['first_name'], 0, 1) . substr($user['last_name'], 0, 1)); ?>
@@ -215,7 +215,7 @@ function messageBoxClasses(string $type): string {
                             <p class="text-sm text-gray-600"><?php echo escape($user['email']); ?></p>
                         </div>
 
-                        <!-- Menu -->
+                        
                         <nav class="p-4">
                             <a href="?tab=dashboard"
                                class="flex items-center px-4 py-3 mb-2 rounded-lg <?php echo $activeTab === 'dashboard' ? 'bg-blue-600 text-white' : 'hover:bg-gray-100 text-gray-700'; ?>">
@@ -241,10 +241,10 @@ function messageBoxClasses(string $type): string {
                     </div>
                 </aside>
 
-                <!-- Main Content Area -->
+                
                 <div class="lg:col-span-3">
                     <?php if ($activeTab === 'dashboard'): ?>
-                        <!-- Statistics -->
+                        
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                             <div class="bg-white rounded-lg shadow-md p-6">
                                 <div class="flex items-center justify-between">
@@ -287,7 +287,7 @@ function messageBoxClasses(string $type): string {
                             </div>
                         </div>
 
-                        <!-- Recent Bookings -->
+                        
                         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                             <h2 class="text-2xl font-bold mb-4">Recent Bookings</h2>
                             <?php if (empty($bookings)): ?>
@@ -350,7 +350,7 @@ function messageBoxClasses(string $type): string {
                         </div>
 
                     <?php elseif ($activeTab === 'bookings'): ?>
-                        <!-- All Bookings -->
+                        
                         <div class="bg-white rounded-lg shadow-md p-6">
                             <h2 class="text-2xl font-bold mb-6">My Bookings</h2>
                             <?php if (empty($bookings)): ?>
@@ -428,7 +428,7 @@ function messageBoxClasses(string $type): string {
                         </div>
 
                     <?php elseif ($activeTab === 'wishlist'): ?>
-                        <!-- Wishlist -->
+                        
                         <div class="bg-white rounded-lg shadow-md p-6">
                             <h2 class="text-2xl font-bold mb-6">My Wishlist</h2>
                             <?php if (empty($wishlist)): ?>
@@ -474,7 +474,7 @@ function messageBoxClasses(string $type): string {
                         </div>
 
                     <?php elseif ($activeTab === 'settings'): ?>
-                        <!-- Settings -->
+                        
                         <div class="bg-white rounded-lg shadow-md p-6">
                             <h2 class="text-2xl font-bold mb-6">Account Settings</h2>
 
@@ -537,7 +537,7 @@ function messageBoxClasses(string $type): string {
                                 </button>
                             </form>
 
-                            <!-- Change Password Section -->
+                            
                             <div class="mt-8 pt-8 border-t">
                                 <h3 class="text-xl font-bold mb-4">Change Password</h3>
                                 <a href="change-password.php" class="inline-block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700">
@@ -545,7 +545,7 @@ function messageBoxClasses(string $type): string {
                                 </a>
                             </div>
 
-                            <!-- Delete Account -->
+                            
                             <div class="mt-8 pt-8 border-t">
                                 <h3 class="text-xl font-bold mb-4 text-red-600">Danger Zone</h3>
                                 <p class="text-gray-600 mb-4">Once you delete your account, there is no going back. Please be certain.</p>

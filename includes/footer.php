@@ -1,8 +1,8 @@
-<!-- Footer -->
+
 <footer class="bg-gray-900 text-white pt-16 pb-8">
     <div class="container mx-auto px-6">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-            <!-- About Section -->
+            
             <div>
                 <div class="flex items-center space-x-2 mb-4">
                     <i class="fas fa-moon text-2xl"></i>
@@ -30,11 +30,11 @@
                 </div>
             </div>
 
-            <!-- Quick Links -->
+            
             <div>
                 <h4 class="font-bold text-lg mb-4">Quick Links</h4>
                 <ul class="space-y-2 text-gray-400">
-                    <li><a href="index.html" class="hover:text-white transition">Home</a></li>
+                    <li><a href="index.php" class="hover:text-white transition">Home</a></li>
                     <li><a href="hotels.php" class="hover:text-white transition">Hotels</a></li>
                     <li><a href="about.php" class="hover:text-white transition">About Us</a></li>
                     <li><a href="contact.php" class="hover:text-white transition">Contact</a></li>
@@ -42,7 +42,7 @@
                 </ul>
             </div>
 
-            <!-- Support -->
+            
             <div>
                 <h4 class="font-bold text-lg mb-4">Support</h4>
                 <ul class="space-y-2 text-gray-400">
@@ -54,7 +54,7 @@
                 </ul>
             </div>
 
-            <!-- Newsletter -->
+            
             <div>
                 <h4 class="font-bold text-lg mb-4">Newsletter</h4>
                 <p class="text-gray-400 mb-4">Subscribe to get exclusive deals and offers</p>
@@ -80,7 +80,7 @@
             </div>
         </div>
 
-        <!-- Payment Methods -->
+        
         <div class="border-t border-gray-800 pt-8 mb-8">
             <h4 class="text-sm text-gray-400 mb-4">We Accept</h4>
             <div class="flex flex-wrap gap-4 text-gray-400">
@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <!-- Copyright -->
+        
         <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p class="text-gray-400 text-sm mb-4 md:mb-0">
                 © <?php echo date('Y'); ?> MoonHeritage. All rights reserved.

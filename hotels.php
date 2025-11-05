@@ -2,7 +2,7 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once 'config.php';
 
-// Get search parameters
+
 $location = sanitize($_GET['location'] ?? '');
 $checkIn = sanitize($_GET['check_in'] ?? '');
 $checkOut = sanitize($_GET['check_out'] ?? '');
@@ -14,7 +14,7 @@ $rating = (float)($_GET['rating'] ?? 0);
 $sortBy = sanitize($_GET['sort'] ?? 'featured');
 $page = max(1, (int)($_GET['page'] ?? 1));
 
-// Build query
+
 $db = getDB();
 $where = ["h.status = 'active'"];
 $params = [];
@@ -47,7 +47,7 @@ if ($rating > 0) {
     $params[] = $rating;
 }
 
-// Sorting
+
 $orderBy = "h.featured DESC, h.created_at DESC";
 switch ($sortBy) {
     case 'price_low':
@@ -64,18 +64,18 @@ switch ($sortBy) {
         break;
 }
 
-// Count total hotels
+
 $whereClause = implode(' AND ', $where);
 $countQuery = "SELECT COUNT(*) as total FROM hotels h WHERE $whereClause";
 $countStmt = $db->prepare($countQuery);
 $countStmt->execute($params);
 $totalHotels = $countStmt->fetch()['total'];
 
-// Pagination
+
 $pagination = paginate($totalHotels, $page, HOTELS_PER_PAGE);
 $offset = $pagination['offset'];
 
-// Fetch hotels
+
 $query = "SELECT h.*, 
           (SELECT COUNT(*) FROM reviews WHERE hotel_id = h.id AND status = 'approved') as review_count,
           (SELECT AVG(rating) FROM reviews WHERE hotel_id = h.id AND status = 'approved') as avg_rating
@@ -88,7 +88,7 @@ $stmt = $db->prepare($query);
 $stmt->execute($params);
 $hotels = $stmt->fetchAll();
 
-// Get categories for filter
+
 $categoriesQuery = "SELECT DISTINCT category, COUNT(*) as count FROM hotels WHERE status = 'active' GROUP BY category";
 $categories = $db->query($categoriesQuery)->fetchAll();
 ?>
@@ -103,20 +103,19 @@ $categories = $db->query($categoriesQuery)->fetchAll();
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation -->
+    
     <nav class="bg-gray-900 text-white sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-8">
-                    <a href="home.html" class="flex items-center space-x-2">
+                    <a href="index.php" class="flex items-center space-x-2">
                         <i class="fas fa-moon text-2xl"></i>
                         <span class="text-xl font-bold">MoonHeritage</span>
                     </a>
                     <div class="hidden md:flex space-x-6">
-                        <a href="home.html" class="hover:text-gray-300 transition">Home</a>
+                        <a href="index.php" class="hover:text-gray-300 transition">Home</a>
                         <a href="hotels.php" class="text-blue-400">Hotels</a>
-                        <a href="flights.php" class="hover:text-gray-300 transition">Flights</a>
-                        <a href="tours.php" class="hover:text-gray-300 transition">Tours</a>
+                        <a href="hotels.php?category=villa" class="hover:text-gray-300 transition">Villas</a>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -135,7 +134,7 @@ $categories = $db->query($categoriesQuery)->fetchAll();
         </div>
     </nav>
 
-    <!-- Search Bar -->
+    
     <section class="bg-white shadow-md py-6">
         <div class="container mx-auto px-6">
             <form method="GET" action="" class="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -171,11 +170,11 @@ $categories = $db->query($categoriesQuery)->fetchAll();
         </div>
     </section>
 
-    <!-- Main Content -->
+    
     <section class="py-8">
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                <!-- Filters Sidebar -->
+                
                 <aside class="lg:col-span-1">
                     <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
                         <h3 class="text-xl font-bold mb-4">Filters</h3>
@@ -183,7 +182,7 @@ $categories = $db->query($categoriesQuery)->fetchAll();
                         <form method="GET" action="" id="filterForm">
                             <input type="hidden" name="location" value="<?php echo escape($location); ?>">
                             
-                            <!-- Price Range -->
+                            
                             <div class="mb-6">
                                 <h4 class="font-semibold mb-3">Price Range</h4>
                                 <div class="space-y-3">
@@ -200,7 +199,7 @@ $categories = $db->query($categoriesQuery)->fetchAll();
                                 </div>
                             </div>
 
-                            <!-- Star Rating -->
+                            
                             <div class="mb-6">
                                 <h4 class="font-semibold mb-3">Star Rating</h4>
                                 <div class="space-y-2">
@@ -220,7 +219,7 @@ $categories = $db->query($categoriesQuery)->fetchAll();
                                 </div>
                             </div>
 
-                            <!-- Property Type -->
+                            
                             <div class="mb-6">
                                 <h4 class="font-semibold mb-3">Property Type</h4>
                                 <div class="space-y-2">
@@ -244,9 +243,9 @@ $categories = $db->query($categoriesQuery)->fetchAll();
                     </div>
                 </aside>
 
-                <!-- Hotels Grid -->
+                
                 <div class="lg:col-span-3">
-                    <!-- Results Header -->
+                    
                     <div class="flex justify-between items-center mb-6">
                         <div>
                             <h2 class="text-2xl font-bold">
@@ -266,7 +265,7 @@ $categories = $db->query($categoriesQuery)->fetchAll();
                         </div>
                     </div>
 
-                    <!-- Hotels List -->
+                    
                     <div class="space-y-6">
                         <?php if (empty($hotels)): ?>
                             <div class="bg-white rounded-lg shadow-md p-12 text-center">
@@ -355,7 +354,7 @@ $categories = $db->query($categoriesQuery)->fetchAll();
                         <?php endif; ?>
                     </div>
 
-                    <!-- Pagination -->
+                    
                     <?php if ($pagination['total_pages'] > 1): ?>
                         <div class="flex justify-center items-center mt-8 space-x-2">
                             <?php if ($pagination['has_previous']): ?>
@@ -389,7 +388,7 @@ $categories = $db->query($categoriesQuery)->fetchAll();
         </div>
     </section>
 
-    <!-- Footer -->
+    
     <?php include 'includes/footer.php'; ?>
 
     <script src="js/main.js"></script>

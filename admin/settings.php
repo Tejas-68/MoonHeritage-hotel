@@ -10,16 +10,16 @@ $db = getDB();
 $message = '';
 $messageType = '';
 
-// Handle form submission
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        // Handle password change separately
+        
         if (!empty($_POST['current_password'])) {
             $currentPassword = $_POST['current_password'];
             $newPassword = $_POST['new_password'];
             $confirmPassword = $_POST['confirm_password'];
             
-            // Verify current password
+            
             $userStmt = $db->prepare("SELECT password FROM users WHERE id = ?");
             $userStmt->execute([getUserId()]);
             $user = $userStmt->fetch();
@@ -36,19 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception('New passwords do not match');
             }
             
-            // Update password
+            
             $hashedPassword = hashPassword($newPassword);
             $updatePwdStmt = $db->prepare("UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?");
             $updatePwdStmt->execute([$hashedPassword, getUserId()]);
             
             logActivity(getUserId(), 'change_password', 'Admin changed their password');
             
-            // Log out user after password change
+            
             session_destroy();
             header('Location: ../login.php?message=Password changed successfully. Please login again.');
             exit();
         } else {
-            // Save other settings
+            
             foreach ($_POST as $key => $value) {
                 if (!in_array($key, ['csrf_token', 'current_password', 'new_password', 'confirm_password'])) {
                     setSetting($key, sanitize($value));
@@ -65,11 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get all settings
+
 $settingsResult = $db->query("SELECT setting_key, value FROM settings")->fetchAll(PDO::FETCH_KEY_PAIR);
 $settings = [];
 
-// Default settings if not exist
+
 $defaultSettings = [
     'site_name' => 'MoonHeritage',
     'site_email' => 'info@moonheritage.com',
@@ -124,7 +124,7 @@ $settings = array_merge($defaultSettings, $settingsResult);
         <form method="POST" class="space-y-6">
             <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
 
-            <!-- General Settings -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
                     <i class="fas fa-cog text-blue-600 mr-3"></i>
@@ -168,7 +168,7 @@ $settings = array_merge($defaultSettings, $settingsResult);
                 </div>
             </div>
 
-            <!-- Booking Settings -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
                     <i class="fas fa-calendar-check text-green-600 mr-3"></i>
@@ -208,7 +208,7 @@ $settings = array_merge($defaultSettings, $settingsResult);
                 </div>
             </div>
 
-            <!-- Display Settings -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
                     <i class="fas fa-desktop text-purple-600 mr-3"></i>
@@ -233,7 +233,7 @@ $settings = array_merge($defaultSettings, $settingsResult);
                 </div>
             </div>
 
-            <!-- Feature Toggles -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
                     <i class="fas fa-toggle-on text-blue-600 mr-3"></i>
@@ -282,7 +282,7 @@ $settings = array_merge($defaultSettings, $settingsResult);
                 </div>
             </div>
 
-            <!-- Admin Password Change -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
                     <i class="fas fa-lock text-red-600 mr-3"></i>
@@ -320,7 +320,7 @@ $settings = array_merge($defaultSettings, $settingsResult);
                 </div>
             </div>
 
-            <!-- Feature Toggles -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
                     <i class="fas fa-toggle-on text-blue-600 mr-3"></i>
@@ -369,7 +369,7 @@ $settings = array_merge($defaultSettings, $settingsResult);
                 </div>
             </div>
 
-            <!-- System Information -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
                     <i class="fas fa-info-circle text-gray-600 mr-3"></i>
@@ -394,7 +394,7 @@ $settings = array_merge($defaultSettings, $settingsResult);
                 </div>
             </div>
 
-            <!-- Save Button -->
+            
             <div class="flex justify-end space-x-4">
                 <a href="dashboard.php" class="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 font-semibold">
                     Cancel

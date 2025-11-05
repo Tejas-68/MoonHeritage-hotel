@@ -2,19 +2,19 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once '../config.php';
 
-// Check if user is admin
+
 if (!isLoggedIn() || !isAdmin()) {
     redirect('../login.php');
 }
 
-// Prevent session confusion - force single context
+
 if (!isset($_SESSION['admin_mode'])) {
     $_SESSION['admin_mode'] = true;
 }
 
 $db = getDB();
 
-// Get statistics
+
 $statsQuery = "
     SELECT 
         (SELECT COUNT(*) FROM hotels WHERE status = 'active') as total_properties,
@@ -25,7 +25,7 @@ $statsQuery = "
 ";
 $stats = $db->query($statsQuery)->fetch();
 
-// Get recent bookings
+
 $recentBookings = $db->query("
     SELECT b.*, h.name as hotel_name, u.email as user_email, u.first_name, u.last_name
     FROM bookings b
@@ -35,7 +35,7 @@ $recentBookings = $db->query("
     LIMIT 10
 ")->fetchAll();
 
-// Get monthly revenue data for chart
+
 $revenueData = $db->query("
     SELECT 
         DATE_FORMAT(created_at, '%Y-%m') as month,
@@ -84,7 +84,7 @@ foreach ($revenueData as $row) {
     </style>
 </head>
 <body class="bg-gray-100">
-    <!-- Mobile Block Message -->
+    
     <div class="md:hidden fixed inset-0 bg-gray-900 text-white flex items-center justify-center p-6 z-50">
         <div class="text-center">
             <i class="fas fa-desktop text-6xl mb-4"></i>
@@ -93,7 +93,7 @@ foreach ($revenueData as $row) {
         </div>
     </div>
 
-    <!-- Sidebar -->
+    
     <aside class="fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white shadow-lg hidden md:block">
         <div class="p-6">
             <div class="flex items-center space-x-2 mb-8">
@@ -145,15 +145,15 @@ foreach ($revenueData as $row) {
         </div>
     </aside>
 
-    <!-- Main Content -->
+    
     <div class="ml-64 p-8">
-        <!-- Header -->
+        
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
             <p class="text-gray-600">Welcome back, <?php echo escape($_SESSION['first_name']); ?>!</p>
         </div>
 
-        <!-- Stats Cards -->
+        
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white rounded-lg shadow-md p-6">
                 <div class="flex items-center justify-between mb-4">
@@ -200,22 +200,22 @@ foreach ($revenueData as $row) {
             </div>
         </div>
 
-        <!-- Charts -->
+        
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <!-- Revenue Chart -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Revenue & Losses (Last 6 Months)</h3>
                 <canvas id="revenueChart"></canvas>
             </div>
 
-            <!-- Bookings Status -->
+            
             <div class="bg-white rounded-lg shadow-md p-6">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Booking Statistics</h3>
                 <canvas id="bookingChart"></canvas>
             </div>
         </div>
 
-        <!-- Recent Bookings -->
+        
         <div class="bg-white rounded-lg shadow-md">
             <div class="p-6 border-b border-gray-200">
                 <h3 class="text-xl font-bold text-gray-800">Recent Bookings</h3>

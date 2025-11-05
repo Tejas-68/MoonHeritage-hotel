@@ -2,14 +2,14 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once 'config.php';
 
-// Get hotel slug
+
 $slug = sanitize($_GET['slug'] ?? '');
 
 if (empty($slug)) {
     redirect('hotels.php');
 }
 
-// Fetch hotel details
+
 $db = getDB();
 $stmt = $db->prepare("
     SELECT h.*, 
@@ -25,15 +25,15 @@ if (!$hotel) {
     redirect('hotels.php');
 }
 
-// Increment view count
+
 $db->prepare("UPDATE hotels SET view_count = view_count + 1 WHERE id = ?")->execute([$hotel['id']]);
 
-// Fetch hotel images
+
 $imagesStmt = $db->prepare("SELECT * FROM hotel_images WHERE hotel_id = ? ORDER BY is_primary DESC, display_order ASC");
 $imagesStmt->execute([$hotel['id']]);
 $images = $imagesStmt->fetchAll();
 
-// Fetch hotel amenities
+
 $amenitiesStmt = $db->prepare("
     SELECT a.* FROM amenities a
     INNER JOIN hotel_amenities ha ON a.id = ha.amenity_id
@@ -42,7 +42,7 @@ $amenitiesStmt = $db->prepare("
 $amenitiesStmt->execute([$hotel['id']]);
 $amenities = $amenitiesStmt->fetchAll();
 
-// Fetch reviews
+
 $reviewsStmt = $db->prepare("
     SELECT r.*, u.first_name, u.last_name, u.profile_image
     FROM reviews r
@@ -54,7 +54,7 @@ $reviewsStmt = $db->prepare("
 $reviewsStmt->execute([$hotel['id']]);
 $reviews = $reviewsStmt->fetchAll();
 
-// Check if user has wishlist this hotel
+
 $inWishlist = false;
 if (isLoggedIn()) {
     $wishlistStmt = $db->prepare("SELECT id FROM wishlist WHERE user_id = ? AND hotel_id = ?");
@@ -62,7 +62,7 @@ if (isLoggedIn()) {
     $inWishlist = $wishlistStmt->fetch() !== false;
 }
 
-// Similar hotels
+
 $similarStmt = $db->prepare("
     SELECT * FROM hotels 
     WHERE category = ? AND id != ? AND status = 'active'
@@ -89,17 +89,16 @@ $similarHotels = $similarStmt->fetchAll();
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Navigation -->
     <nav class="bg-gray-900 text-white sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-8">
-                    <a href="index.html" class="flex items-center space-x-2">
+                    <a href="index.php" class="flex items-center space-x-2">
                         <i class="fas fa-moon text-2xl"></i>
                         <span class="text-xl font-bold">MoonHeritage</span>
                     </a>
                     <div class="hidden md:flex space-x-6">
-                        <a href="index.html" class="hover:text-gray-300 transition">Home</a>
+                        <a href="index.php" class="hover:text-gray-300 transition">Home</a>
                         <a href="hotels.php" class="hover:text-gray-300 transition">Hotels</a>
                     </div>
                 </div>
@@ -119,7 +118,6 @@ $similarHotels = $similarStmt->fetchAll();
         </div>
     </nav>
 
-    <!-- Image Gallery -->
     <section class="bg-white">
         <div class="container mx-auto px-6 py-6">
             <div class="grid grid-cols-4 gap-2 h-96">
@@ -152,13 +150,11 @@ $similarHotels = $similarStmt->fetchAll();
         </div>
     </section>
 
-    <!-- Main Content -->
     <section class="py-8">
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Left Column - Hotel Info -->
                 <div class="lg:col-span-2 space-y-6">
-                    <!-- Header -->
+                    
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <div class="flex justify-between items-start mb-4">
                             <div>
@@ -193,13 +189,12 @@ $similarHotels = $similarStmt->fetchAll();
                         </div>
                     </div>
 
-                    <!-- About -->
+                    
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <h2 class="text-2xl font-bold mb-4">About This Property</h2>
                         <p class="text-gray-700 leading-relaxed"><?php echo nl2br(escape($hotel['description'])); ?></p>
                     </div>
 
-                    <!-- Amenities -->
                     <?php if (!empty($amenities)): ?>
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <h2 class="text-2xl font-bold mb-4">Amenities</h2>
@@ -214,19 +209,8 @@ $similarHotels = $similarStmt->fetchAll();
                     </div>
                     <?php endif; ?>
 
-                    <!-- Location -->
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <h2 class="text-2xl font-bold mb-4">Location</h2>
-                        <div class="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
-                            <p class="text-gray-500"><i class="fas fa-map-marked-alt text-4xl"></i></p>
-                        </div>
-                        <p class="mt-4 text-gray-700">
-                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
-                            <?php echo escape($hotel['address'] . ', ' . $hotel['city'] . ', ' . $hotel['country']); ?>
-                        </p>
-                    </div>
-
-                    <!-- Reviews -->
+                    
+                    
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold">Guest Reviews</h2>
@@ -267,7 +251,6 @@ $similarHotels = $similarStmt->fetchAll();
                         <?php endif; ?>
                     </div>
 
-                    <!-- Similar Hotels -->
                     <?php if (!empty($similarHotels)): ?>
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <h2 class="text-2xl font-bold mb-6">Similar Properties</h2>
@@ -295,7 +278,6 @@ $similarHotels = $similarStmt->fetchAll();
                     <?php endif; ?>
                 </div>
 
-                <!-- Right Column - Booking Card -->
                 <div class="lg:col-span-1">
                     <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
                         <div class="mb-6">
@@ -381,7 +363,6 @@ $similarHotels = $similarStmt->fetchAll();
                                 Instant confirmation
                             </div>
                         </div>
-
                         <div class="mt-6">
                             <a href="tel:<?php echo $hotel['phone']; ?>" class="block text-center text-blue-600 hover:underline">
                                 <i class="fas fa-phone mr-2"></i>Contact Property
@@ -392,8 +373,7 @@ $similarHotels = $similarStmt->fetchAll();
             </div>
         </div>
     </section>
-
-    <!-- Lightbox Modal -->
+    
     <div id="lightbox" class="modal fixed inset-0 bg-black bg-opacity-90 z-50 items-center justify-center">
         <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white text-4xl hover:text-gray-300">
             <i class="fas fa-times"></i>
@@ -407,7 +387,6 @@ $similarHotels = $similarStmt->fetchAll();
         <img id="lightboxImg" src="" alt="Hotel Image" class="max-w-5xl max-h-screen object-contain">
     </div>
 
-    <script src="js/main.js"></script>
     <script>
         const images = <?php echo json_encode(array_map(function($img) { return getImageUrl($img['image_path']); }, $images)); ?>;
         let currentIndex = 0;
@@ -451,7 +430,7 @@ $similarHotels = $similarStmt->fetchAll();
             });
         }
 
-        // Keyboard navigation
+        
         document.addEventListener('keydown', function(e) {
             if (document.getElementById('lightbox').classList.contains('active')) {
                 if (e.key === 'ArrowLeft') prevImage();

@@ -1,16 +1,7 @@
--- ======================================================
--- MoonHeritage — Complete database.sql (COPY & PASTE)
--- Creates database `moonheritage`, tables, constraints, indexes,
--- and sample data. Compatible with XAMPP/MySQL (InnoDB, utf8mb4).
--- Login supports BOTH username AND email.
--- ======================================================
-
-/* Create database and select it */
 CREATE DATABASE IF NOT EXISTS moonheritage
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE moonheritage;
 
--- Temporarily disable foreign key checks for clean drops
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS promotion_hotels;
@@ -32,9 +23,7 @@ DROP TABLE IF EXISTS users;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- ======================================================
 -- USERS
--- ======================================================
 CREATE TABLE IF NOT EXISTS users (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE,
@@ -62,9 +51,7 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_users_role (role)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- HOTELS
--- ======================================================
 CREATE TABLE IF NOT EXISTS hotels (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
@@ -106,12 +93,9 @@ CREATE TABLE IF NOT EXISTS hotels (
     CONSTRAINT fk_hotels_owner FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-/* Fulltext index for search (MySQL 5.6+, InnoDB supported) */
 CREATE FULLTEXT INDEX IF NOT EXISTS ft_hotels_search ON hotels (name, description, city, country);
 
--- ======================================================
 -- HOTEL IMAGES
--- ======================================================
 CREATE TABLE IF NOT EXISTS hotel_images (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     hotel_id INT UNSIGNED NOT NULL,
@@ -124,9 +108,7 @@ CREATE TABLE IF NOT EXISTS hotel_images (
     CONSTRAINT fk_hotel_images_hotel FOREIGN KEY (hotel_id) REFERENCES hotels(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- AMENITIES + HOTEL_AMENITIES
--- ======================================================
 CREATE TABLE IF NOT EXISTS amenities (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -145,9 +127,7 @@ CREATE TABLE IF NOT EXISTS hotel_amenities (
     CONSTRAINT fk_hotel_amenities_amenity FOREIGN KEY (amenity_id) REFERENCES amenities(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- ROOMS
--- ======================================================
 CREATE TABLE IF NOT EXISTS rooms (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     hotel_id INT UNSIGNED NOT NULL,
@@ -165,9 +145,7 @@ CREATE TABLE IF NOT EXISTS rooms (
     CONSTRAINT fk_rooms_hotel FOREIGN KEY (hotel_id) REFERENCES hotels(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- BOOKINGS
--- ======================================================
 CREATE TABLE IF NOT EXISTS bookings (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     booking_number VARCHAR(30) UNIQUE NOT NULL,
@@ -202,9 +180,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     CONSTRAINT fk_bookings_room FOREIGN KEY (room_id) REFERENCES rooms(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- REVIEWS
--- ======================================================
 CREATE TABLE IF NOT EXISTS reviews (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
@@ -231,9 +207,7 @@ CREATE TABLE IF NOT EXISTS reviews (
     CONSTRAINT fk_reviews_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- WISHLIST
--- ======================================================
 CREATE TABLE IF NOT EXISTS wishlist (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
@@ -245,9 +219,7 @@ CREATE TABLE IF NOT EXISTS wishlist (
     CONSTRAINT fk_wishlist_hotel FOREIGN KEY (hotel_id) REFERENCES hotels(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- PROMOTIONS & PROMOTION_HOTELS
--- ======================================================
 CREATE TABLE IF NOT EXISTS promotions (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
@@ -280,9 +252,7 @@ CREATE TABLE IF NOT EXISTS promotion_hotels (
     CONSTRAINT fk_promotion_hotels_hotel FOREIGN KEY (hotel_id) REFERENCES hotels(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- NEWSLETTER SUBSCRIBERS
--- ======================================================
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -296,9 +266,7 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
     INDEX idx_newsletter_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- CONTACT MESSAGES
--- ======================================================
 CREATE TABLE IF NOT EXISTS contact_messages (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -313,9 +281,7 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     INDEX idx_contact_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- ACTIVITY LOGS
--- ======================================================
 CREATE TABLE IF NOT EXISTS activity_logs (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED,
@@ -330,9 +296,7 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- SETTINGS
--- ======================================================
 CREATE TABLE IF NOT EXISTS settings (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     setting_key VARCHAR(100) UNIQUE NOT NULL,
@@ -342,9 +306,7 @@ CREATE TABLE IF NOT EXISTS settings (
     INDEX idx_settings_key (setting_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
 -- DESTINATIONS
--- ======================================================
 CREATE TABLE IF NOT EXISTS destinations (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -358,17 +320,14 @@ CREATE TABLE IF NOT EXISTS destinations (
     INDEX idx_destinations_featured (featured)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ======================================================
--- DEFAULT SEED DATA (admin, amenities, hotels, promotions, destinations)
--- ======================================================
+-- DEFAULT DATA
 
 -- Admin user (password hashed). The hash in this SQL was produced for 'admin123' using bcrypt ($2y$).
--- Replace with your own hash if you use a different password.
 INSERT INTO users (username, email, password, first_name, last_name, role, email_verified, status)
 VALUES
 ('admin','admin@moonheritage.com','$2y$12$V9qoP6XGZpV4b2uQpt9vyeEue5hEAtDPpOG7DNMAmQ8Ki7lgf5Obi','Admin','User','admin',1,'active');
 
--- Amenities (sample)
+-- Amenities
 INSERT INTO amenities (name, icon, category) VALUES
 ('Free WiFi', 'fa-wifi', 'connectivity'),
 ('Swimming Pool', 'fa-swimming-pool', 'recreation'),
@@ -391,7 +350,7 @@ INSERT INTO amenities (name, icon, category) VALUES
 ('Kid-Friendly', 'fa-child', 'family'),
 ('24/7 Front Desk', 'fa-clock', 'service');
 
--- Sample Hotels (minimal required columns provided)
+-- Sample Hotels
 INSERT INTO hotels (name, slug, description, short_description, address, city, country, category, star_rating, price_per_night, original_price, discount_percentage, featured, total_rooms, available_rooms, main_image, status)
 VALUES
 ('Moonlight Majestic Hotel', 'moonlight-majestic-hotel', 'Experience luxury and comfort in the heart of Mykonos. Our hotel offers stunning views, world-class amenities, and exceptional service.', 'Luxury hotel with stunning ocean views', '123 Beach Road', 'Mykonos', 'Greece', 'hotel', 5.0, 160.00, 200.00, 20, 1, 50, 45, 'hotels/moonlight-majestic.jpg', 'active'),
@@ -403,7 +362,7 @@ VALUES
 ('Majestic Serenity Palace', 'majestic-serenity-palace', 'Heritage palace hotel offering royal treatment in the backwaters of Kerala.', 'Heritage palace on Kerala backwaters', '888 Palace Road', 'Kerala', 'India', 'hotel', 4.5, 420.00, 420.00, 0, 0, 60, 55, 'hotels/serenity-palace.jpg', 'active'),
 ('Bella Vista', 'bella-vista', 'Coastal luxury hotel with Mediterranean cuisine and sunset views.', 'Luxury coastal hotel with sea views', '999 Coastal Way', 'Puglia', 'Italy', 'hotel', 5.0, 450.00, 450.00, 0, 0, 45, 40, 'hotels/bella-vista.jpg', 'active');
 
--- Sample Settings
+--  Settings
 INSERT INTO settings (setting_key, value, description) VALUES
 ('site_name', 'MoonHeritage', 'Website name'),
 ('site_email', 'info@moonheritage.com', 'Contact email'),
@@ -412,17 +371,16 @@ INSERT INTO settings (setting_key, value, description) VALUES
 ('featured_hotels_limit', '8', 'Number of featured hotels to display'),
 ('reviews_per_page', '10', 'Reviews per page');
 
--- Sample Promotions
 INSERT INTO promotions (title, description, discount_type, discount_value, promo_code, valid_from, valid_until, min_booking_amount, image, status)
 VALUES
 ('Summer Special', 'Get 50% off on selected hotels this summer!', 'percentage', 50.00, 'SUMMER50', '2025-06-01', '2025-08-31', 100.00, 'promos/summer-special.jpg', 'active'),
 ('Christmas Deals', 'Celebrate the holidays with 75% discount on luxury stays!', 'percentage', 75.00, 'XMAS75', '2025-12-01', '2025-12-31', 200.00, 'promos/christmas-deals.jpg', 'active');
 
--- Map promotions to hotels (adjust IDs if you later reseed differently)
+
 INSERT INTO promotion_hotels (promotion_id, hotel_id) VALUES
 (1, 1), (1, 2), (2, 4);
 
--- Sample Destinations
+-- Sample Destinationss
 INSERT INTO destinations (name, country, description, hotel_count, featured, display_order) VALUES
 ('Paris', 'France', 'The city of love and lights', 156, 1, 1),
 ('Mykonos', 'Greece', 'Beautiful Greek island paradise', 89, 1, 2),
@@ -431,17 +389,7 @@ INSERT INTO destinations (name, country, description, hotel_count, featured, dis
 ('Dubai', 'UAE', 'Modern luxury destination', 312, 0, 5),
 ('Tokyo', 'Japan', 'Blend of tradition and modernity', 267, 0, 6);
 
--- ======================================================
--- Optional: example mapping of a few amenities to a hotel (hotel_id 1 exists from above inserts)
--- ======================================================
 INSERT IGNORE INTO hotel_amenities (hotel_id, amenity_id)
 SELECT 1, id FROM amenities WHERE name IN ('Free WiFi','Swimming Pool','Parking') LIMIT 3;
 
--- ======================================================
--- Final notes:
--- 1) If you import via phpMyAdmin: upload this full file and run it. All tables/constraints will be created.
--- 2) If you change column names in your PHP code, update the SQL accordingly (especially users.username/email).
--- 3) Admin password hash above is bcrypt for 'admin123'. To change password, replace the hash with your own bcrypt hash.
--- 4) If you need demo bookings / rooms seed data added, tell me "add demo bookings" and I'll append them.
--- ======================================================
 

@@ -13,7 +13,7 @@ if (empty($token)) {
 try {
     $db = getDB();
     
-    // Find user with this verification token
+    
     $stmt = $db->prepare("
         SELECT id, email, first_name 
         FROM users 
@@ -27,7 +27,7 @@ try {
         $message = 'Invalid or expired verification link';
         $messageType = 'error';
     } else {
-        // Verify the email
+        
         $updateStmt = $db->prepare("
             UPDATE users 
             SET email_verified = 1, 
@@ -37,10 +37,10 @@ try {
         ");
         $updateStmt->execute([$user['id']]);
         
-        // Log activity
+        
         logActivity($user['id'], 'email_verified', 'Email address verified');
         
-        // Send welcome email
+        
         $welcomeSubject = "Welcome to MoonHeritage - {$user['first_name']}!";
         $welcomeMessage = "
             <html>

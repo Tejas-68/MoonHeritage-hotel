@@ -27,7 +27,7 @@ try {
     $db = getDB();
     
     if ($id) {
-        // Update existing amenity
+        
         $stmt = $db->prepare("
             UPDATE amenities 
             SET name = ?, icon = ?, category = ?
@@ -44,7 +44,7 @@ try {
         ]);
         
     } else {
-        // Check if amenity already exists
+        
         $checkStmt = $db->prepare("SELECT id FROM amenities WHERE name = ?");
         $checkStmt->execute([$name]);
         
@@ -52,7 +52,7 @@ try {
             jsonResponse(['success' => false, 'message' => 'Facility with this name already exists'], 400);
         }
         
-        // Insert new amenity
+        
         $stmt = $db->prepare("
             INSERT INTO amenities (name, icon, category, created_at) 
             VALUES (?, ?, ?, NOW())

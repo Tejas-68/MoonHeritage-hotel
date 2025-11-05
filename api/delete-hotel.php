@@ -22,7 +22,7 @@ try {
     
     $db = getDB();
     
-    // Check if hotel has active bookings
+    
     $bookingCheck = $db->prepare("
         SELECT COUNT(*) as count 
         FROM bookings 
@@ -39,7 +39,7 @@ try {
         ], 400);
     }
     
-    // Get hotel details for logging
+    
     $hotelStmt = $db->prepare("SELECT name, main_image FROM hotels WHERE id = ?");
     $hotelStmt->execute([$id]);
     $hotel = $hotelStmt->fetch();
@@ -48,12 +48,12 @@ try {
         jsonResponse(['success' => false, 'message' => 'Hotel not found'], 404);
     }
     
-    // Delete hotel image if exists
+    
     if ($hotel['main_image'] && $hotel['main_image'] !== 'hotels/default.jpg') {
         deleteFile($hotel['main_image']);
     }
     
-    // Delete hotel (cascades will handle related records)
+    
     $deleteStmt = $db->prepare("DELETE FROM hotels WHERE id = ?");
     $deleteStmt->execute([$id]);
     

@@ -32,13 +32,13 @@ try {
     $featured = (int)($_POST['featured'] ?? 0);
     $status = sanitize($_POST['status'] ?? 'active');
     
-    // Calculate discount percentage
+    
     $discount_percentage = 0;
     if ($original_price && $original_price > $price_per_night) {
         $discount_percentage = calculateDiscount($original_price, $price_per_night);
     }
     
-    // Handle image upload
+    
     $main_image = null;
     if (isset($_FILES['main_image']) && $_FILES['main_image']['error'] === UPLOAD_ERR_OK) {
         $uploadResult = uploadImage($_FILES['main_image'], 'hotels');
@@ -50,7 +50,7 @@ try {
     }
     
     if ($id) {
-        // Update existing hotel
+        
         $sql = "UPDATE hotels SET 
                 name = ?, slug = ?, description = ?, short_description = ?,
                 address = ?, city = ?, country = ?, phone = ?, category = ?,
@@ -82,9 +82,9 @@ try {
         jsonResponse(['success' => true, 'message' => 'Hotel updated successfully', 'id' => $id]);
         
     } else {
-        // Insert new hotel
+        
         if (!$main_image) {
-            $main_image = 'hotels/default.jpg'; // Default image
+            $main_image = 'hotels/default.jpg'; 
         }
         
         $sql = "INSERT INTO hotels (

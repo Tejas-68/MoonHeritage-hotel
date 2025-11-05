@@ -20,14 +20,14 @@ try {
         jsonResponse(['success' => false, 'message' => 'Invalid user ID'], 400);
     }
     
-    // Prevent admin from deleting themselves
+    
     if ($userId == getUserId()) {
         jsonResponse(['success' => false, 'message' => 'You cannot delete your own account'], 400);
     }
     
     $db = getDB();
     
-    // Get user details for logging
+    
     $userStmt = $db->prepare("SELECT email, first_name, last_name, role FROM users WHERE id = ?");
     $userStmt->execute([$userId]);
     $user = $userStmt->fetch();
@@ -36,12 +36,12 @@ try {
         jsonResponse(['success' => false, 'message' => 'User not found'], 404);
     }
     
-    // Prevent deleting other admins
+    
     if ($user['role'] === 'admin') {
         jsonResponse(['success' => false, 'message' => 'Cannot delete admin accounts'], 400);
     }
     
-    // Check if user has active bookings
+    
     $bookingCheck = $db->prepare("
         SELECT COUNT(*) as count 
         FROM bookings 
@@ -58,11 +58,11 @@ try {
         ], 400);
     }
     
-    // Delete user (cascades will handle related records)
+    
     $deleteStmt = $db->prepare("DELETE FROM users WHERE id = ?");
     $deleteStmt->execute([$userId]);
     
-    // Send notification email
+    
     $subject = "Account Deletion - MoonHeritage";
     $message = "
         <html>

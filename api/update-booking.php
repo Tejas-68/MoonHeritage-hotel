@@ -28,7 +28,7 @@ try {
     
     $db = getDB();
     
-    // Get booking details
+    
     $bookingStmt = $db->prepare("
         SELECT b.*, h.name as hotel_name, u.email as user_email, u.first_name, u.last_name
         FROM bookings b
@@ -43,7 +43,7 @@ try {
         jsonResponse(['success' => false, 'message' => 'Booking not found'], 404);
     }
     
-    // Update booking status
+    
     $updateSql = "UPDATE bookings SET booking_status = ?, updated_at = NOW()";
     $params = [$status];
     
@@ -57,7 +57,7 @@ try {
     $stmt = $db->prepare($updateSql);
     $stmt->execute($params);
     
-    // Send notification email to user
+    
     $subject = "Booking " . ucfirst($status) . " - " . $booking['hotel_name'];
     $message = "
         <html>

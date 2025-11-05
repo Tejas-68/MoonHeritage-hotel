@@ -1,11 +1,11 @@
-// MoonHeritage - Main JavaScript File
 
-// Wait for DOM to be fully loaded
+
+
 document.addEventListener("DOMContentLoaded", function () {
   initializeApp();
 });
 
-// Initialize all app functions
+
 function initializeApp() {
   initNavbar();
   initSearchBox();
@@ -17,7 +17,7 @@ function initializeApp() {
   initMobileMenu();
 }
 
-// Navbar scroll effect
+
 function initNavbar() {
   const navbar = document.querySelector("nav");
   let lastScroll = 0;
@@ -35,7 +35,7 @@ function initNavbar() {
   });
 }
 
-// Search box functionality
+
 function initSearchBox() {
   const searchForm = document.querySelector(".search-form");
   const locationInput = document.querySelector(
@@ -46,20 +46,20 @@ function initSearchBox() {
     'input[placeholder="1 guest, 1 room"]'
   );
 
-  // Set minimum date to today
+  
   if (dateInput) {
     const today = new Date().toISOString().split("T")[0];
     dateInput.setAttribute("min", today);
   }
 
-  // Guest input dropdown
+  
   if (guestInput) {
     guestInput.addEventListener("click", function () {
       showGuestSelector(this);
     });
   }
 
-  // Search functionality
+  
   const searchForms = document.querySelectorAll(".search-form");
   searchForms.forEach((form) => {
     form.addEventListener("submit", function (e) {
@@ -69,7 +69,7 @@ function initSearchBox() {
   });
 }
 
-// Guest selector modal
+
 function showGuestSelector(input) {
   const modal = document.createElement("div");
   modal.className = "absolute bg-white shadow-lg rounded-lg p-6 mt-2 z-50 w-80";
@@ -105,7 +105,7 @@ function showGuestSelector(input) {
 
   input.parentElement.appendChild(modal);
 
-  // Handle guest counter
+  
   const counts = { adults: 1, children: 0, rooms: 1 };
 
   modal.querySelectorAll(".guest-plus").forEach((btn) => {
@@ -134,7 +134,7 @@ function showGuestSelector(input) {
     modal.remove();
   });
 
-  // Close modal when clicking outside
+  
   setTimeout(() => {
     document.addEventListener("click", function closeModal(e) {
       if (!modal.contains(e.target) && e.target !== input) {
@@ -152,13 +152,13 @@ function updateGuestDisplay(modal, counts, input) {
   });
 }
 
-// Filter functionality
+
 function initFilters() {
   const filterButtons = document.querySelectorAll(".px-4.py-1, .px-6.py-2");
 
   filterButtons.forEach((button) => {
     button.addEventListener("click", function () {
-      // Remove active class from siblings
+      
       const siblings = this.parentElement.querySelectorAll(
         ".px-4.py-1, .px-6.py-2"
       );
@@ -167,11 +167,11 @@ function initFilters() {
         sibling.classList.add("bg-gray-200", "text-gray-700");
       });
 
-      // Add active class to clicked button
+      
       this.classList.remove("bg-gray-200", "text-gray-700");
       this.classList.add("bg-blue-600", "text-white");
 
-      // Filter content based on selection
+      
       const filterType = this.textContent.trim();
       filterHotels(filterType);
     });
@@ -179,19 +179,19 @@ function initFilters() {
 }
 
 function filterHotels(filterType) {
-  // This would filter hotel cards based on the selected type
+  
   console.log("Filtering by:", filterType);
   showToast("Filter applied: " + filterType, "success");
 }
 
-// Hotel card interactions
+
 function initHotelCards() {
   const hotelCards = document.querySelectorAll(
     ".bg-white.rounded-lg.shadow-lg"
   );
 
   hotelCards.forEach((card) => {
-    // Wishlist heart icon
+    
     const heartButton = card.querySelector(".fa-heart")?.parentElement;
     if (heartButton) {
       heartButton.addEventListener("click", function (e) {
@@ -200,7 +200,7 @@ function initHotelCards() {
       });
     }
 
-    // Card click to view details
+    
     card.addEventListener("click", function () {
       const hotelName = this.querySelector("h3")?.textContent;
       if (hotelName) {
@@ -228,11 +228,11 @@ function toggleWishlist(button) {
 
 function viewHotelDetails(hotelName) {
   console.log("Viewing hotel:", hotelName);
-  // Redirect to hotel details page
+  
   window.location.href = `hotel-details.php?name=${encodeURIComponent(hotelName)}`;
 }
 
-// Date picker functionality
+
 function initDatePicker() {
   const dateInputs = document.querySelectorAll('input[type="date"]');
 
@@ -256,7 +256,7 @@ function validateDates() {
   }
 }
 
-// Perform search
+
 function performSearch() {
   const location = document.querySelector(
     'input[placeholder="Add destination"]'
@@ -276,7 +276,7 @@ function performSearch() {
     return;
   }
 
-  // Show loading
+  
   const searchButton = document.querySelector(
     ".bg-blue-600.text-white.px-6.py-3"
   );
@@ -285,12 +285,12 @@ function performSearch() {
     '<i class="fas fa-spinner fa-spin"></i> Searching...';
   searchButton.disabled = true;
 
-  // Simulate search (replace with actual API call)
+  
   setTimeout(() => {
     searchButton.innerHTML = originalText;
     searchButton.disabled = false;
 
-    // Redirect to search results
+    
     const searchParams = new URLSearchParams({
       location: location,
       date: date,
@@ -301,7 +301,7 @@ function performSearch() {
   }, 1500);
 }
 
-// Scroll animations
+
 function initScrollAnimations() {
   const observerOptions = {
     threshold: 0.1,
@@ -317,14 +317,14 @@ function initScrollAnimations() {
     });
   }, observerOptions);
 
-  // Observe all sections
+  
   const sections = document.querySelectorAll("section");
   sections.forEach((section) => {
     observer.observe(section);
   });
 }
 
-// Lazy loading images
+
 function initLazyLoading() {
   const images = document.querySelectorAll('img[loading="lazy"]');
 
@@ -344,7 +344,7 @@ function initLazyLoading() {
   }
 }
 
-// Mobile menu toggle
+
 function initMobileMenu() {
   const mobileMenuButton = document.querySelector(".mobile-menu-button");
   const mobileMenu = document.querySelector(".mobile-menu");
@@ -356,7 +356,7 @@ function initMobileMenu() {
   }
 }
 
-// Toast notification system
+
 function showToast(message, type = "info") {
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
@@ -387,14 +387,14 @@ function showToast(message, type = "info") {
 
   document.body.appendChild(toast);
 
-  // Auto remove after 3 seconds
+  
   setTimeout(() => {
     toast.style.animation = "slideOutRight 0.3s ease-out";
     setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
 
-// Newsletter subscription
+
 const newsletterForm = document.querySelector(
   'footer input[type="email"]'
 )?.parentElement;
@@ -420,17 +420,17 @@ function validateEmail(email) {
 }
 
 function subscribeNewsletter(email) {
-  // Show loading
+  
   showToast("Subscribing...", "info");
 
-  // Simulate API call
+  
   setTimeout(() => {
     showToast("Successfully subscribed to newsletter!", "success");
     console.log("Subscribed:", email);
   }, 1000);
 }
 
-// Smooth scroll for anchor links
+
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   anchor.addEventListener("click", function (e) {
     e.preventDefault();
@@ -444,7 +444,7 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
   });
 });
 
-// Price formatting
+
 function formatPrice(price) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -453,7 +453,7 @@ function formatPrice(price) {
   }).format(price);
 }
 
-// Date formatting
+
 function formatDate(date) {
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
@@ -462,7 +462,7 @@ function formatDate(date) {
   }).format(new Date(date));
 }
 
-// Search suggestions
+
 let searchTimeout;
 const locationInput = document.querySelector(
   'input[placeholder="Add destination"]'
@@ -482,10 +482,10 @@ if (locationInput) {
 }
 
 function fetchSearchSuggestions(query) {
-  // This would fetch suggestions from backend
+  
   console.log("Fetching suggestions for:", query);
 
-  // Mock suggestions
+  
   const suggestions = [
     "Paris, France",
     "Tokyo, Japan",
@@ -530,17 +530,17 @@ function showSuggestions(suggestions) {
   locationInput.parentElement.appendChild(dropdown);
 }
 
-// Window resize handler
+
 let resizeTimeout;
 window.addEventListener("resize", function () {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(() => {
     console.log("Window resized");
-    // Handle responsive adjustments
+    
   }, 250);
 });
 
-// Page visibility handler
+
 document.addEventListener("visibilitychange", function () {
   if (document.hidden) {
     console.log("Page is hidden");
@@ -549,20 +549,20 @@ document.addEventListener("visibilitychange", function () {
   }
 });
 
-// Error handling
+
 window.addEventListener("error", function (e) {
   console.error("Error occurred:", e.error);
-  // Log to error tracking service
+  
 });
 
-// Console welcome message
+
 console.log(
   "%cMoonHeritage",
   "font-size: 24px; font-weight: bold; color: #3b82f6;"
 );
 console.log("%cFind Your Best Staycation", "font-size: 14px; color: #6b7280;");
 
-// Export functions for use in other files
+
 window.MoonHeritage = {
   showToast,
   formatPrice,

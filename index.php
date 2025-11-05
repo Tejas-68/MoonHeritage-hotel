@@ -4,7 +4,7 @@ require_once 'config.php';
 
 $db = getDB();
 
-// Fetch featured hotels
+
 $featuredHotelsStmt = $db->query("
     SELECT h.*, 
     (SELECT AVG(rating) FROM reviews WHERE hotel_id = h.id AND status = 'approved') as avg_rating,
@@ -16,7 +16,7 @@ $featuredHotelsStmt = $db->query("
 ");
 $featuredHotels = $featuredHotelsStmt->fetchAll();
 
-// Fetch featured villas
+
 $featuredVillasStmt = $db->query("
     SELECT h.*, 
     (SELECT AVG(rating) FROM reviews WHERE hotel_id = h.id AND status = 'approved') as avg_rating,
@@ -28,11 +28,11 @@ $featuredVillasStmt = $db->query("
 ");
 $featuredVillas = $featuredVillasStmt->fetchAll();
 
-// Fetch amenities
+
 $amenitiesStmt = $db->query("SELECT * FROM amenities ORDER BY name LIMIT 12");
 $amenities = $amenitiesStmt->fetchAll();
 
-// Fetch active promotions
+
 $promotionsStmt = $db->query("
     SELECT * FROM promotions 
     WHERE status = 'active' 
@@ -54,7 +54,7 @@ $promotions = $promotionsStmt->fetchAll();
 </head>
 <body class="bg-gray-50">
     
-    <!-- Navigation -->
+    
     <nav class="bg-black text-white sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
@@ -89,13 +89,13 @@ $promotions = $promotionsStmt->fetchAll();
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    
     <section class="relative h-screen bg-cover bg-center" style="background-image:linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),url('images/hero-bg.jpg');">
         <div class="container mx-auto px-6 h-full flex items-center">
             <div class="text-white max-w-4xl">
                 <h1 class="text-6xl font-bold mb-6">Find Your Best Staycation</h1>
                 
-                <!-- Search Box -->
+                
                 <div class="bg-white rounded-lg shadow-2xl p-6 mt-8">
                     <form action="hotels.php" method="GET">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -133,7 +133,7 @@ $promotions = $promotionsStmt->fetchAll();
         </div>
     </section>
 
-    <!-- Featured Hotels Section -->
+    
     <section class="py-16 bg-gray-50">
         <div class="container mx-auto px-6">
             <div class="flex justify-between items-center mb-8">
@@ -184,7 +184,7 @@ $promotions = $promotionsStmt->fetchAll();
         </div>
     </section>
 
-    <!-- Featured Villas Section -->
+    
     <section class="py-16 bg-white">
         <div class="container mx-auto px-6">
             <div class="flex justify-between items-center mb-8">
@@ -227,7 +227,7 @@ $promotions = $promotionsStmt->fetchAll();
         </div>
     </section>
 
-    <!-- Footer -->
+    
     <footer class="bg-gray-900 text-white pt-16 pb-8">
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
