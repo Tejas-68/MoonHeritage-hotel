@@ -228,60 +228,6 @@ $promotions = $promotionsStmt->fetchAll();
     </section>
 
     <!-- Footer -->
-    <footer class="bg-black text-white pt-16 pb-8">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <i class="fas fa-moon text-2xl"></i>
-                        <span class="text-xl font-bold">MoonHeritage</span>
-                    </div>
-                    <p class="text-gray-400 mb-4">Making travel more accessible to everyone.</p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-gray-700 transition">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-gray-700 transition">
-                            <i class="fab fa-facebook"></i>
-                        </a>
-                        <a href="#" class="bg-gray-800 p-2 rounded-full hover:bg-gray-700 transition">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4">About</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition">About Us</a></li>
-                        <li><a href="#" class="hover:text-white transition">Careers</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Support</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
-                        <li><a href="#" class="hover:text-white transition">FAQ</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Newsletter</h4>
-                    <form action="api/newsletter.php" method="POST">
-                        <input type="email" name="email" placeholder="Enter your email" required
-                               class="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 mb-2">
-                        <button type="submit" class="w-full bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700">
-                            Subscribe
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-                © 2025 MoonHeritage. All rights reserved.
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 </body>
 </html>

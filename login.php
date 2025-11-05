@@ -2,11 +2,9 @@
 define('MOONHERITAGE_ACCESS', true);
 require_once 'config.php';
 
-
 if (isLoggedIn()) {
     redirect('index.php');
 }
-
 
 $error = '';
 $success = '';
@@ -14,7 +12,6 @@ $success = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = sanitize($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-    $remember = isset($_POST['remember']);
     
     if (empty($email) || empty($password)) {
         $error = 'Please enter both email and password';
@@ -26,29 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $stmt->fetch();
             
             if ($user && verifyPassword($password, $user['password'])) {
-                
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['role'] = $user['role'];
                 $_SESSION['first_name'] = $user['first_name'];
                 $_SESSION['last_name'] = $user['last_name'];
-                
-                
-                $updateStmt = $db->prepare("UPDATE users SET last_login = NOW() WHERE id = ?");
-                $updateStmt->execute([$user['id']]);
-                
-                
-                logActivity($user['id'], 'login', 'User logged in');
-                
-                
-                if ($remember) {
-                    $token = generateRandomString(64);
-                    setcookie('remember_token', $token, time() + (86400 * 30), '/'); 
-                    
-                    
-                }
-                
                 
                 if ($user['role'] === 'admin') {
                     header('Location: /MoonHeritage/admin/dashboard.php');
@@ -57,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } else {
                 $error = 'Invalid email or password';
-                logActivity(null, 'failed_login', "Failed login attempt for email: $email");
             }
         } catch (PDOException $e) {
             $error = 'An error occurred. Please try again.';
@@ -75,28 +53,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .login-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-    </style>
 </head>
-<body class="login-bg min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
     <div class="container mx-auto max-w-md">
-        
         <div class="text-center mb-8">
             <a href="index.php" class="inline-flex items-center space-x-2 text-white">
                 <i class="fas fa-moon text-4xl"></i>
                 <span class="text-3xl font-bold">MoonHeritage</span>
             </a>
         </div>
-
         
-        <div class="glass-effect rounded-2xl shadow-2xl p-8">
+        <div class="bg-white rounded-lg shadow-xl p-8">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
                 <p class="text-gray-600">Sign in to your account to continue</p>
@@ -147,52 +114,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
 
-                
-                <div class="flex items-center justify-between mb-6">
-                    <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" name="remember" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
-                        <span class="ml-2 text-gray-700">Remember me</span>
-                    </label>
-                    <a href="forgot-password.php" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
-                        Forgot Password?
-                    </a>
-                </div>
-
-                
                 <button type="submit" 
-                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 rounded-lg hover:from-blue-700 hover:to-purple-700 transition transform hover:scale-105 shadow-lg">
+                        class="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">
                     <i class="fas fa-sign-in-alt mr-2"></i>Sign In
                 </button>
             </form>
 
-            
-            <div class="relative my-8">
-                <div class="absolute inset-0 flex items-center">
-                    <div class="w-full border-t border-gray-300"></div>
-                </div>
-                <div class="relative flex justify-center text-sm">
-                    <span class="px-4 bg-white text-gray-500">Or continue with</span>
-                </div>
-            </div>
-
-            
-            <div class="grid grid-cols-3 gap-3 mb-6">
-                <button type="button" 
-                        class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                    <i class="fab fa-google text-red-500 text-xl"></i>
-                </button>
-                <button type="button" 
-                        class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                    <i class="fab fa-facebook text-blue-600 text-xl"></i>
-                </button>
-                <button type="button" 
-                        class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
-                    <i class="fab fa-twitter text-blue-400 text-xl"></i>
-                </button>
-            </div>
-
-            
-            <div class="text-center">
+            <div class="text-center mt-6">
                 <p class="text-gray-600">
                     Don't have an account? 
                     <a href="signup.php" class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">
@@ -202,7 +130,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
 
-        
         <div class="text-center mt-6">
             <a href="index.php" class="text-white hover:text-gray-200 flex items-center justify-center space-x-2">
                 <i class="fas fa-arrow-left"></i>
@@ -229,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Form validation
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm')?.addEventListener('submit', function(e) {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
@@ -239,29 +166,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 return false;
             }
             
-            // Email validation
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 e.preventDefault();
                 alert('Please enter a valid email address');
                 return false;
             }
-            
-            // Show loading state
-            const submitBtn = this.querySelector('button[type="submit"]');
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
-            submitBtn.disabled = true;
         });
-
-        // Add animation on load
-        window.addEventListener('load', function() {
-            document.querySelector('.glass-effect').classList.add('fade-in');
-        });
-
-        // Demo credentials info
-        console.log('Demo Login Credentials:');
-        console.log('Email: admin@moonheritage.com');
-        console.log('Password: admin123');
     </script>
 </body>
 </html>
