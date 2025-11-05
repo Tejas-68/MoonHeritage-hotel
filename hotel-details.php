@@ -89,7 +89,7 @@ $similarHotels = $similarStmt->fetchAll();
     </style>
 </head>
 <body class="bg-gray-50">
-    <nav class="bg-gray-900 text-white sticky top-0 z-50 shadow-lg">
+    <nav class="bg-black text-white sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-8">
