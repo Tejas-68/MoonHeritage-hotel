@@ -4,92 +4,57 @@ require_once '../config.php';
 
 header('Content-Type: application/json');
 
-
-$input = json_decode(file_get_contents('php://input'), true);
-$email = sanitize($input['email'] ?? '');
-
-
-if (empty($email)) {
-    jsonResponse(['success' => false, 'message' => 'Email is required'], 400);
-}
-
-if (!validateEmail($email)) {
-    jsonResponse(['success' => false, 'message' => 'Invalid email address'], 400);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    jsonResponse(['success' => false, 'message' => 'Invalid request method'], 405);
 }
 
 try {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $email = filter_var($data['email'] ?? '', FILTER_SANITIZE_EMAIL);
+    
+    if (!validateEmail($email)) {
+        jsonResponse(['success' => false, 'message' => 'Invalid email address'], 400);
+    }
+    
     $db = getDB();
     
-    
+    // Check if email already subscribed
     $checkStmt = $db->prepare("SELECT id, status FROM newsletter_subscribers WHERE email = ?");
     $checkStmt->execute([$email]);
-    $existing = $checkStmt->fetch();
+    $subscriber = $checkStmt->fetch();
     
-    if ($existing) {
-        if ($existing['status'] === 'subscribed') {
-            jsonResponse([
-                'success' => false,
-                'message' => 'This email is already subscribed'
-            ], 400);
+    if ($subscriber) {
+        if ($subscriber['status'] === 'subscribed') {
+            jsonResponse(['success' => false, 'message' => 'Email already subscribed'], 400);
         } else {
-            
-            $updateStmt = $db->prepare("UPDATE newsletter_subscribers SET status = 'subscribed', subscribed_at = NOW() WHERE email = ?");
+            // Reactivate subscription
+            $updateStmt = $db->prepare("UPDATE newsletter_subscribers SET status = 'subscribed', subscribed_at = NOW(), unsubscribed_at = NULL WHERE email = ?");
             $updateStmt->execute([$email]);
             
             jsonResponse([
                 'success' => true,
-                'message' => 'Successfully resubscribed to newsletter'
+                'message' => 'Successfully resubscribed to newsletter!'
             ]);
         }
     } else {
-        
-        $verificationToken = generateRandomString(64);
-        
-        
-        $insertStmt = $db->prepare("
-            INSERT INTO newsletter_subscribers (email, verification_token, subscribed_at) 
-            VALUES (?, ?, NOW())
-        ");
+        // New subscription
+        $verificationToken = generateRandomString(32);
+        $insertStmt = $db->prepare("INSERT INTO newsletter_subscribers (email, verification_token, subscribed_at) VALUES (?, ?, NOW())");
         $insertStmt->execute([$email, $verificationToken]);
         
-        
-        $verificationLink = SITE_URL . "verify-newsletter.php?token=" . $verificationToken;
-        $emailSubject = "Welcome to MoonHeritage Newsletter";
-        $emailMessage = "
-            <html>
-            <body style='font-family: Arial, sans-serif;'>
-                <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
-                    <h2 style='color: #3b82f6;'>Welcome to MoonHeritage!</h2>
-                    <p>Thank you for subscribing to our newsletter.</p>
-                    <p>You'll now receive exclusive deals, travel tips, and special offers directly to your inbox.</p>
-                    <p style='text-align: center; margin: 30px 0;'>
-                        <a href='$verificationLink' style='background: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;'>Verify Email</a>
-                    </p>
-                    <p style='font-size: 12px; color: #6b7280;'>
-                        If you didn't subscribe, you can safely ignore this email.
-                    </p>
-                    <hr style='margin: 30px 0;'>
-                    <p style='color: #6b7280; font-size: 12px;'>© 2025 MoonHeritage. All rights reserved.</p>
-                </div>
-            </body>
-            </html>
-        ";
-        
-        sendEmail($email, $emailSubject, $emailMessage);
-        
-        
-        if (isLoggedIn()) {
-            logActivity(getUserId(), 'newsletter_subscribed', "Subscribed: $email");
-        }
+        // In a real application, you would send a verification email here
+        // sendEmail($email, 'Confirm Newsletter Subscription', 'Please click the link to confirm...');
         
         jsonResponse([
             'success' => true,
-            'message' => 'Successfully subscribed! Please check your email to verify.'
+            'message' => 'Successfully subscribed to newsletter!'
         ]);
     }
     
 } catch (PDOException $e) {
-    error_log($e->getMessage());
+    error_log('Newsletter subscription error: ' . $e->getMessage());
+    jsonResponse(['success' => false, 'message' => 'Database error occurred'], 500);
+} catch (Exception $e) {
+    error_log('Newsletter subscription error: ' . $e->getMessage());
     jsonResponse(['success' => false, 'message' => 'An error occurred'], 500);
 }
-?>

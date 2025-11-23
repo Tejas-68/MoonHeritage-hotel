@@ -9,37 +9,46 @@ if (isLoggedIn()) {
 $error = '';
 $success = '';
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = sanitize($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
-    
-    if (empty($email) || empty($password)) {
-        $error = 'Please enter both email and password';
+    // Verify CSRF token
+    if (!isset($_POST['csrf_token']) || !verifyCSRFToken($_POST['csrf_token'])) {
+        $error = 'Invalid request. Please try again.';
     } else {
-        try {
-            $db = getDB();
-            $stmt = $db->prepare("SELECT * FROM users WHERE email = ? AND status = 'active'");
-            $stmt->execute([$email]);
-            $user = $stmt->fetch();
-            
-            if ($user && verifyPassword($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['role'] = $user['role'];
-                $_SESSION['first_name'] = $user['first_name'];
-                $_SESSION['last_name'] = $user['last_name'];
+        $email = sanitize($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
+        
+        if (empty($email) || empty($password)) {
+            $error = 'Please enter both email and password';
+        } else {
+            try {
+                $db = getDB();
+                $stmt = $db->prepare("SELECT * FROM users WHERE email = ? AND status = 'active'");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch();
                 
-                if ($user['role'] === 'admin') {
-                    header('Location: /MoonHeritage/admin/dashboard.php');
+                if ($user && verifyPassword($password, $user['password'])) {
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['first_name'] = $user['first_name'];
+                    $_SESSION['last_name'] = $user['last_name'];
+                    
+                    // Update last login
+                    $db->prepare("UPDATE users SET last_login = NOW() WHERE id = ?")->execute([$user['id']]);
+                    
+                    if ($user['role'] === 'admin') {
+                        redirect('admin/dashboard.php');
+                    } else {
+                        redirect('index.php');
+                    }
                 } else {
-                    redirect('index.php');
+                    $error = 'Invalid email or password';
                 }
-            } else {
-                $error = 'Invalid email or password';
+            } catch (PDOException $e) {
+                $error = 'An error occurred. Please try again.';
+                error_log($e->getMessage());
             }
-        } catch (PDOException $e) {
-            $error = 'An error occurred. Please try again.';
-            error_log($e->getMessage());
         }
     }
 }

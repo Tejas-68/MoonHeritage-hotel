@@ -34,15 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Email already registered';
             } else {
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                $stmt = $db->prepare("INSERT INTO users (email, password, first_name, last_name, created_at) VALUES (?, ?, ?, ?, NOW())");
+                $stmt = $db->prepare("INSERT INTO users (email, password, first_name, last_name, role, created_at) VALUES (?, ?, ?, ?, 'user', NOW())");
                 
                 if ($stmt->execute([$email, $hashedPassword, $firstName, $lastName])) {
                     $userId = $db->lastInsertId();
                     $_SESSION['user_id'] = $userId;
                     $_SESSION['email'] = $email;
+                    $_SESSION['role'] = 'user';
                     $_SESSION['first_name'] = $firstName;
                     $_SESSION['last_name'] = $lastName;
                     redirect('index.php');
+                } else {
+                    $error = 'Registration failed. Please try again.';
                 }
             }
         } catch (PDOException $e) {
@@ -184,43 +187,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
-                            $_SESSION['email'] = $email;
-                            $_SESSION['role'] = 'user';
-                            $_SESSION['first_name'] = $firstName;
-                            $_SESSION['last_name'] = $lastName;
-                            
-                            
-                            header("Refresh: 2; url=index.php");
-                        } else {
-                            $error = 'Registration failed. Please try again.';
-                        }
-                    }
-                }
-            } catch (PDOException $e) {
-                $error = 'An error occurred. Please try again.';
-                error_log($e->getMessage());
-            }
-        }
-    }
-}
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - MoonHeritage</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
-    <div class="container mx-auto max-w-md">
-        <div class="text-center mb-8">
-            <a href="index.php" class="inline-flex items-center space-x-2 text-white">
-                <i class="fas fa-moon text-4xl"></i>
-                <span class="text-3xl font-bold">MoonHeritage</span>
-            </a>
-        </div>
-        
-        <div class="bg-white rounded-lg shadow-xl p-8">

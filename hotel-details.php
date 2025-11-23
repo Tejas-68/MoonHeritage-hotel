@@ -344,7 +344,7 @@ $similarHotels = $similarStmt->fetchAll();
                                 </select>
                             </div>
 
-                            <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 font-semibold text-lg transition">
+                            <button type="submit" onclick="this.form.submit();" class="w-full bg-blue-600 text-white py-4 rounded-lg hover:bg-blue-700 font-semibold text-lg transition">
                                 <i class="fas fa-calendar-check mr-2"></i>Book Now
                             </button>
                         </form>

@@ -48,44 +48,40 @@ if ($rating > 0) {
 }
 
 
-$orderBy = "h.featured DESC, h.created_at DESC";
-switch ($sortBy) {
-    case 'price_low':
-        $orderBy = "h.price_per_night ASC";
-        break;
-    case 'price_high':
-        $orderBy = "h.price_per_night DESC";
-        break;
-    case 'rating':
-        $orderBy = "h.star_rating DESC";
-        break;
-    case 'popular':
-        $orderBy = "h.view_count DESC";
-        break;
-}
 
+// Build ORDER BY clause safely
+$allowedSorts = [
+    'featured' => 'h.featured DESC, h.created_at DESC',
+    'price_low' => 'h.price_per_night ASC',
+    'price_high' => 'h.price_per_night DESC',
+    'rating' => 'h.star_rating DESC',
+    'popular' => 'h.view_count DESC'
+];
 
+$orderBy = $allowedSorts[$sortBy] ?? $allowedSorts['featured'];
+
+// Get total count
 $whereClause = implode(' AND ', $where);
 $countQuery = "SELECT COUNT(*) as total FROM hotels h WHERE $whereClause";
 $countStmt = $db->prepare($countQuery);
 $countStmt->execute($params);
 $totalHotels = $countStmt->fetch()['total'];
 
-
+// Get pagination
 $pagination = paginate($totalHotels, $page, HOTELS_PER_PAGE);
 $offset = $pagination['offset'];
 
-
+// Get hotels with safe ORDER BY
 $query = "SELECT h.*, 
           (SELECT COUNT(*) FROM reviews WHERE hotel_id = h.id AND status = 'approved') as review_count,
           (SELECT AVG(rating) FROM reviews WHERE hotel_id = h.id AND status = 'approved') as avg_rating
           FROM hotels h 
           WHERE $whereClause 
           ORDER BY $orderBy 
-          LIMIT " . HOTELS_PER_PAGE . " OFFSET $offset";
+          LIMIT ? OFFSET ?";
 
 $stmt = $db->prepare($query);
-$stmt->execute($params);
+$stmt->execute(array_merge($params, [HOTELS_PER_PAGE, $offset]));
 $hotels = $stmt->fetchAll();
 
 
