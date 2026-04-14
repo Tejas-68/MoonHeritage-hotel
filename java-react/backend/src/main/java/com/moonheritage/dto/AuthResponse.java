@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AuthResponse {
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String token;
     private String email;
     private String firstName;

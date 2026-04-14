@@ -32,8 +32,11 @@ public class HotelController {
         Page<Hotel> result = hotelService.searchHotels(
             search, city, category, minPrice, maxPrice, page, size, sort
         );
+        List<com.moonheritage.dto.HotelDto> dtos = result.getContent().stream()
+            .map(com.moonheritage.dto.HotelDto::fromEntity)
+            .toList();
         return ResponseEntity.ok(Map.of(
-            "hotels",      result.getContent(),
+            "hotels",      dtos,
             "totalPages",  result.getTotalPages(),
             "totalItems",  result.getTotalElements(),
             "currentPage", result.getNumber()
@@ -41,8 +44,9 @@ public class HotelController {
     }
 
     @GetMapping("/featured")
-    public ResponseEntity<List<Hotel>> getFeatured() {
-        return ResponseEntity.ok(hotelService.getFeaturedHotels());
+    public ResponseEntity<List<com.moonheritage.dto.HotelDto>> getFeatured() {
+        return ResponseEntity.ok(hotelService.getFeaturedHotels()
+            .stream().map(com.moonheritage.dto.HotelDto::fromEntity).toList());
     }
 
     @GetMapping("/{id}")

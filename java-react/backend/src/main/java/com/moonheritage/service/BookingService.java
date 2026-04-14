@@ -32,8 +32,16 @@ public class BookingService {
         Hotel hotel = hotelRepository.findById(request.getHotelId())
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
 
+        if (request.getCheckInDate().isBefore(java.time.LocalDate.now())) {
+            throw new RuntimeException("Check-in date cannot be in the past");
+        }
+
         long nights = ChronoUnit.DAYS.between(request.getCheckInDate(), request.getCheckOutDate());
         if (nights < 1) throw new RuntimeException("Check-out must be after check-in");
+
+        if (request.getRoomsCount() > hotel.getAvailableRooms()) {
+            throw new RuntimeException("Not enough rooms available. Only " + hotel.getAvailableRooms() + " left.");
+        }
 
         BigDecimal pricePerNight = hotel.getPricePerNight();
         BigDecimal subtotal = pricePerNight
@@ -60,6 +68,10 @@ public class BookingService {
         booking.setPaymentStatus(Booking.PaymentStatus.pending);
         booking.setBookingStatus(Booking.BookingStatus.confirmed);
         booking.setSpecialRequests(request.getSpecialRequests());
+
+        // Decrement inventory
+        hotel.setAvailableRooms(hotel.getAvailableRooms() - request.getRoomsCount());
+        hotelRepository.save(hotel);
 
         return bookingRepository.save(booking);
     }

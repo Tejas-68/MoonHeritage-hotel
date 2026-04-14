@@ -16,6 +16,7 @@ export default function Hotels() {
   const [searchParams] = useSearchParams()
   const [hotels, setHotels] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [totalPages, setTotalPages] = useState(0)
   const [totalItems, setTotalItems] = useState(0)
   const [filters, setFilters] = useState({
@@ -30,6 +31,7 @@ export default function Hotels() {
 
   const fetchHotels = useCallback(async () => {
     setLoading(true)
+    setError(null)
     try {
       const params = new URLSearchParams()
       if (filters.search)   params.set('search', filters.search)
@@ -44,7 +46,9 @@ export default function Hotels() {
       setHotels(res.data.hotels)
       setTotalPages(res.data.totalPages)
       setTotalItems(res.data.totalItems)
-    } catch (err) { console.error(err) }
+    } catch (err) { 
+      setError(err.response?.data?.error || err.message || 'Failed to load properties')
+    }
     finally { setLoading(false) }
   }, [filters])
 
@@ -133,6 +137,14 @@ export default function Hotels() {
           {loading ? (
             <div className="flex justify-center py-20">
               <div className="w-10 h-10 border-2 border-gold-400 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : error ? (
+            <div className="text-center py-20">
+               <div className="bg-red-500/10 text-red-400 border border-red-500/20 p-4 rounded-xl max-w-lg mx-auto">
+                 <p className="font-semibold">Failed to load properties</p>
+                 <p className="text-sm mt-1">{error}</p>
+                 <button onClick={fetchHotels} className="mt-4 px-4 py-2 border border-red-500/30 rounded-lg text-sm hover:bg-red-500/10">Retry</button>
+               </div>
             </div>
           ) : hotels.length === 0 ? (
             <div className="text-center py-20 text-slate-400">

@@ -6,13 +6,14 @@ import HotelCard from '../components/HotelCard'
 export default function Home() {
   const [featured, setFeatured] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
     api.get('/hotels/featured')
       .then(r => setFeatured(r.data))
-      .catch(console.error)
+      .catch(err => setError(err.response?.data?.error || err.message || 'Failed to load hotels'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -95,6 +96,13 @@ export default function Home() {
         {loading ? (
           <div className="flex justify-center py-20">
             <div className="w-10 h-10 border-2 border-gold-400 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : error ? (
+          <div className="text-center py-20">
+             <div className="bg-red-500/10 text-red-400 border border-red-500/20 p-4 rounded-xl max-w-lg mx-auto">
+               <p className="font-semibold">Failed to load featured properties</p>
+               <p className="text-sm mt-1">{error}</p>
+             </div>
           </div>
         ) : featured.length === 0 ? (
           <div className="text-center py-20 text-slate-400">

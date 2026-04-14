@@ -1,5 +1,6 @@
 package com.moonheritage.controller;
 
+import com.moonheritage.dto.UserDto;
 import com.moonheritage.model.User;
 import com.moonheritage.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +19,14 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping("/profile")
-    public ResponseEntity<?> getProfile(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<UserDto> getProfile(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        // Return without password
-        user.setPassword(null);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(UserDto.fromEntity(user));
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<?> updateProfile(
+    public ResponseEntity<UserDto> updateProfile(
             @RequestBody Map<String, String> updates,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
@@ -42,7 +41,6 @@ public class UserController {
         if (updates.containsKey("country"))   user.setCountry(updates.get("country"));
 
         userRepository.save(user);
-        user.setPassword(null);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(UserDto.fromEntity(user));
     }
 }

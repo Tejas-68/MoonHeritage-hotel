@@ -27,17 +27,21 @@ public class BookingController {
     ) {
         try {
             Booking booking = bookingService.createBooking(request, userDetails.getUsername());
-            return ResponseEntity.ok(booking);
+            return ResponseEntity.ok(com.moonheritage.dto.BookingDto.fromEntity(booking));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<Booking>> getMyBookings(
+    public ResponseEntity<List<com.moonheritage.dto.BookingDto>> getMyBookings(
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        return ResponseEntity.ok(bookingService.getUserBookings(userDetails.getUsername()));
+        List<com.moonheritage.dto.BookingDto> bookings = bookingService.getUserBookings(userDetails.getUsername())
+                .stream()
+                .map(com.moonheritage.dto.BookingDto::fromEntity)
+                .toList();
+        return ResponseEntity.ok(bookings);
     }
 
     @PutMapping("/{id}/cancel")
@@ -49,7 +53,7 @@ public class BookingController {
         try {
             Booking booking = bookingService.cancelBooking(id, userDetails.getUsername(),
                     body.getOrDefault("reason", "Cancelled by user"));
-            return ResponseEntity.ok(booking);
+            return ResponseEntity.ok(com.moonheritage.dto.BookingDto.fromEntity(booking));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

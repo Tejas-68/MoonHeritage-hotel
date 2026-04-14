@@ -59,8 +59,15 @@ public class ReviewController {
             review.setStatus(Review.ReviewStatus.pending);
 
             if (request.getBookingId() != null) {
-                bookingRepository.findById(request.getBookingId())
-                    .ifPresent(b -> { review.setBooking(b); review.setVerifiedBooking(true); });
+                bookingRepository.findById(request.getBookingId()).ifPresent(b -> {
+                    // VERIFY OWNERSHIP AND HOTEL MATCH
+                    if (b.getUser().getId().equals(user.getId()) && b.getHotel().getId().equals(hotel.getId())) {
+                        review.setBooking(b);
+                        review.setVerifiedBooking(true);
+                    } else {
+                        throw new RuntimeException("Invalid booking reference for this hotel and user");
+                    }
+                });
             }
 
             reviewRepository.save(review);
