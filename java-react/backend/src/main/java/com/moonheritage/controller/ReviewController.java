@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
@@ -24,9 +23,10 @@ public class ReviewController {
     private final HotelRepository hotelRepository;
     private final BookingRepository bookingRepository;
 
+    // MongoDB uses String ObjectId path variables
     @GetMapping("/hotel/{hotelId}")
     public ResponseEntity<Page<Review>> getHotelReviews(
-            @PathVariable Long hotelId,
+            @PathVariable String hotelId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -47,8 +47,13 @@ public class ReviewController {
                     .orElseThrow(() -> new RuntimeException("Hotel not found"));
 
             Review review = new Review();
-            review.setUser(user);
-            review.setHotel(hotel);
+            review.setUserId(user.getId());
+            review.setHotelId(hotel.getId());
+            // Denormalize user display info
+            review.setUserFirstName(user.getFirstName());
+            review.setUserLastName(user.getLastName());
+            review.setUserProfileImage(user.getProfileImage());
+
             review.setRating(request.getRating());
             review.setTitle(request.getTitle());
             review.setComment(request.getComment());
@@ -60,12 +65,9 @@ public class ReviewController {
 
             if (request.getBookingId() != null) {
                 bookingRepository.findById(request.getBookingId()).ifPresent(b -> {
-                    // VERIFY OWNERSHIP AND HOTEL MATCH
-                    if (b.getUser().getId().equals(user.getId()) && b.getHotel().getId().equals(hotel.getId())) {
-                        review.setBooking(b);
+                    if (b.getUserId().equals(user.getId()) && b.getHotelId().equals(hotel.getId())) {
+                        review.setBookingId(b.getId());
                         review.setVerifiedBooking(true);
-                    } else {
-                        throw new RuntimeException("Invalid booking reference for this hotel and user");
                     }
                 });
             }

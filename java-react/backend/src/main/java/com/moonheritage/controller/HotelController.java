@@ -49,8 +49,9 @@ public class HotelController {
             .stream().map(com.moonheritage.dto.HotelDto::fromEntity).toList());
     }
 
+    // MongoDB uses String ObjectId, not Long
     @GetMapping("/{id}")
-    public ResponseEntity<Hotel> getById(@PathVariable Long id) {
+    public ResponseEntity<Hotel> getById(@PathVariable String id) {
         return ResponseEntity.ok(hotelService.getHotelById(id));
     }
 

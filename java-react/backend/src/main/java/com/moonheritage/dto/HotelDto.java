@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record HotelDto(
-    Long id,
+    String id,
     String name,
     String slug,
     String shortDescription,
@@ -41,8 +41,8 @@ public record HotelDto(
             hotel.getMainImage(),
             hotel.getCategory() != null ? hotel.getCategory().name() : null,
             hotel.getAvailableRooms(),
-            org.hibernate.Hibernate.isInitialized(hotel.getAmenities()) && hotel.getAmenities() != null 
-                ? hotel.getAmenities().stream().map(a -> a.getName()).toList() 
+            hotel.getAmenities() != null
+                ? hotel.getAmenities().stream().map(a -> a.getName()).toList()
                 : null
         );
     }

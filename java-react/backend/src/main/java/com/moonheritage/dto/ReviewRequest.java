@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 @Data
 public class ReviewRequest {
     @NotNull
-    private Long hotelId;
+    private String hotelId;
 
-    private Long bookingId;
+    private String bookingId;
 
     @NotNull @DecimalMin("1.0") @DecimalMax("5.0")
     private BigDecimal rating;

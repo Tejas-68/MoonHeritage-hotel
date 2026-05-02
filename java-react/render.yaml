@@ -1,0 +1,27 @@
+# render.yaml — Render.com Infrastructure-as-Code
+# Deploy your Java backend here for free: https://render.com
+
+services:
+  - type: web
+    name: moonheritage-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    plan: free                       # Change to 'starter' for always-on
+    healthCheckPath: /api/hotels     # Render pings this to verify startup
+    envVars:
+      # ⬇⬇  PASTE YOUR MONGODB ATLAS URI HERE  ⬇⬇
+      - key: MONGODB_URI
+        # ⬇⬇  Replace YOUR_PASSWORD with your Atlas password  ⬇⬇
+        value: mongodb+srv://Tejas:YOUR_PASSWORD@moonheritage.6jc7ti6.mongodb.net/moonheritage?retryWrites=true&w=majority&appName=moonheritage
+
+      # JWT secret — generate a long random string
+      - key: JWT_SECRET
+        value: Replace-This-With-A-Very-Long-Random-Secret-Key-Min-32-Chars
+
+      # Vercel frontend URL (update after Vercel deploy)
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://YOUR-APP.vercel.app,http://localhost:3000
+
+      # Enable secure HTTPS-only cookies
+      - key: COOKIE_SECURE
+        value: "true"

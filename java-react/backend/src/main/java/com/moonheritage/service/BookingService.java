@@ -5,7 +5,6 @@ import com.moonheritage.model.*;
 import com.moonheritage.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,7 +23,6 @@ public class BookingService {
 
     private static final BigDecimal TAX_RATE = new BigDecimal("0.10");
 
-    @Transactional
     public Booking createBooking(BookingRequest request, String userEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -52,8 +50,14 @@ public class BookingService {
 
         Booking booking = new Booking();
         booking.setBookingNumber("MH-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        booking.setUser(user);
-        booking.setHotel(hotel);
+        booking.setUserId(user.getId());
+        booking.setHotelId(hotel.getId());
+        // Denormalize key hotel info at booking time
+        booking.setHotelName(hotel.getName());
+        booking.setHotelCity(hotel.getCity());
+        booking.setHotelCountry(hotel.getCountry());
+        booking.setHotelMainImage(hotel.getMainImage());
+
         booking.setCheckInDate(request.getCheckInDate());
         booking.setCheckOutDate(request.getCheckOutDate());
         booking.setTotalNights((int) nights);
@@ -79,15 +83,17 @@ public class BookingService {
     public List<Booking> getUserBookings(String userEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return bookingRepository.findByUserOrderByCreatedAtDesc(user);
+        return bookingRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
     }
 
-    @Transactional
-    public Booking cancelBooking(Long bookingId, String userEmail, String reason) {
+    public Booking cancelBooking(String bookingId, String userEmail, String reason) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        if (!booking.getUser().getEmail().equals(userEmail)) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!booking.getUserId().equals(user.getId())) {
             throw new RuntimeException("Not authorized to cancel this booking");
         }
         if (booking.getBookingStatus() == Booking.BookingStatus.cancelled) {

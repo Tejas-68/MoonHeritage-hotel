@@ -27,7 +27,7 @@ public class AdminController {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
 
-    @Value("${app.upload.dir}")
+    @Value("${app.upload.dir:./uploads/}")
     private String uploadDir;
 
     // ── Dashboard Stats ──────────────────────────────────────────────
@@ -82,8 +82,9 @@ public class AdminController {
         return ResponseEntity.ok(hotel);
     }
 
+    // MongoDB uses String ObjectId, not Long
     @PutMapping("/hotels/{id}")
-    public ResponseEntity<?> updateHotel(@PathVariable Long id, @Valid @RequestBody HotelRequest req) {
+    public ResponseEntity<?> updateHotel(@PathVariable String id, @Valid @RequestBody HotelRequest req) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
         mapRequestToHotel(hotel, req);
@@ -92,7 +93,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/hotels/{id}")
-    public ResponseEntity<?> deleteHotel(@PathVariable Long id) {
+    public ResponseEntity<?> deleteHotel(@PathVariable String id) {
         hotelRepository.deleteById(id);
         return ResponseEntity.ok(Map.of("message", "Hotel deleted"));
     }
@@ -101,7 +102,7 @@ public class AdminController {
 
     @PostMapping("/hotels/{id}/image")
     public ResponseEntity<?> uploadMainImage(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestParam("file") MultipartFile file
     ) {
         Hotel hotel = hotelRepository.findById(id)
@@ -118,7 +119,7 @@ public class AdminController {
 
     @PostMapping("/hotels/{id}/images")
     public ResponseEntity<?> uploadGalleryImage(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestParam("file") MultipartFile file,
             @RequestParam(defaultValue = "false") boolean isPrimary
     ) {
@@ -127,20 +128,40 @@ public class AdminController {
         try {
             String filename = saveFile(file, hotel.getSlug() + "-" + System.currentTimeMillis());
             HotelImage image = new HotelImage();
-            image.setHotel(hotel);
+            image.setId(UUID.randomUUID().toString());
             image.setImagePath(filename);
             image.setIsPrimary(isPrimary);
             image.setDisplayOrder(hotel.getImages() != null ? hotel.getImages().size() : 0);
-            // Note: saving through HotelImage requires a HotelImageRepository
-            // Store path as main image if marked primary or no main image yet
+
+            if (hotel.getImages() == null) hotel.setImages(new ArrayList<>());
+            hotel.getImages().add(image);
+
             if (isPrimary || hotel.getMainImage() == null) {
                 hotel.setMainImage(filename);
-                hotelRepository.save(hotel);
             }
-            return ResponseEntity.ok(Map.of("filename", filename, "url", "http://localhost/MoonHeritage/images/" + filename));
+            hotelRepository.save(hotel);
+            return ResponseEntity.ok(Map.of("filename", filename));
         } catch (IOException e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Image upload failed: " + e.getMessage()));
         }
+    }
+
+    // ── Review Moderation ────────────────────────────────────────────
+
+    @PutMapping("/reviews/{id}/approve")
+    public ResponseEntity<?> approveReview(@PathVariable String id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+        review.setStatus(Review.ReviewStatus.approved);
+        return ResponseEntity.ok(reviewRepository.save(review));
+    }
+
+    @PutMapping("/reviews/{id}/reject")
+    public ResponseEntity<?> rejectReview(@PathVariable String id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+        review.setStatus(Review.ReviewStatus.rejected);
+        return ResponseEntity.ok(reviewRepository.save(review));
     }
 
     // ── Helpers ──────────────────────────────────────────────────────

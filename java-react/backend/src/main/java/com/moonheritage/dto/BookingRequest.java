@@ -7,9 +7,9 @@ import java.time.LocalDate;
 @Data
 public class BookingRequest {
     @NotNull
-    private Long hotelId;
+    private String hotelId;
 
-    private Long roomId;
+    private String roomId;
 
     @NotNull
     private LocalDate checkInDate;

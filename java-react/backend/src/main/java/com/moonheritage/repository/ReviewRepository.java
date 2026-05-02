@@ -3,16 +3,20 @@ package com.moonheritage.repository;
 import com.moonheritage.model.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.mongodb.repository.Aggregation;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface ReviewRepository extends JpaRepository<Review, Long> {
+import java.util.Optional;
 
-    Page<Review> findByHotelIdAndStatus(Long hotelId, Review.ReviewStatus status, Pageable pageable);
+public interface ReviewRepository extends MongoRepository<Review, String> {
 
-    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.hotel.id = :hotelId AND r.status = 'approved'")
-    Double getAverageRatingForHotel(@Param("hotelId") Long hotelId);
+    Page<Review> findByHotelIdAndStatus(String hotelId, Review.ReviewStatus status, Pageable pageable);
 
-    long countByHotelIdAndStatus(Long hotelId, Review.ReviewStatus status);
+    long countByHotelIdAndStatus(String hotelId, Review.ReviewStatus status);
+
+    @Aggregation(pipeline = {
+        "{ $match: { hotelId: ?0, status: 'approved' } }",
+        "{ $group: { _id: null, avg: { $avg: '$rating' } } }"
+    })
+    Optional<Double> getAverageRatingForHotel(String hotelId);
 }

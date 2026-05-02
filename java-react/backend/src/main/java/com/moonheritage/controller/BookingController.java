@@ -44,9 +44,10 @@ public class BookingController {
         return ResponseEntity.ok(bookings);
     }
 
+    // MongoDB uses String ObjectId, not Long
     @PutMapping("/{id}/cancel")
     public ResponseEntity<?> cancelBooking(
-            @PathVariable Long id,
+            @PathVariable String id,
             @RequestBody Map<String, String> body,
             @AuthenticationPrincipal UserDetails userDetails
     ) {

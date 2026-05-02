@@ -3,7 +3,7 @@ package com.moonheritage.dto;
 import com.moonheritage.model.User;
 
 public record UserDto(
-    Long id,
+    String id,       // String ObjectId for MongoDB
     String username,
     String email,
     String firstName,

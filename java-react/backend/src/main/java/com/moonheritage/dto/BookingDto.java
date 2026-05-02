@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record BookingDto(
-    Long id,
+    String id,
     String bookingNumber,
-    Long hotelId,
+    String hotelId,
     String hotelName,
     String hotelImage,
     LocalDate checkInDate,
@@ -26,9 +26,9 @@ public record BookingDto(
         return new BookingDto(
             booking.getId(),
             booking.getBookingNumber(),
-            booking.getHotel().getId(),
-            booking.getHotel().getName(),
-            booking.getHotel().getMainImage(),
+            booking.getHotelId(),
+            booking.getHotelName(),
+            booking.getHotelMainImage(),
             booking.getCheckInDate(),
             booking.getCheckOutDate(),
             booking.getTotalNights(),
