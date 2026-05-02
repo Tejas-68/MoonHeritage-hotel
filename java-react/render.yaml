@@ -6,22 +6,17 @@ services:
     name: moonheritage-backend
     env: docker
     dockerfilePath: ./backend/Dockerfile
-    plan: free                       # Change to 'starter' for always-on
-    healthCheckPath: /api/hotels     # Render pings this to verify startup
+    plan: free    
+    healthCheckPath: /api/hotels 
     envVars:
-      # ⬇⬇  PASTE YOUR MONGODB ATLAS URI HERE  ⬇⬇
       - key: MONGODB_URI
-        # ⬇⬇  Replace YOUR_PASSWORD with your Atlas password  ⬇⬇
-        value: mongodb+srv://Tejas:YOUR_PASSWORD@moonheritage.6jc7ti6.mongodb.net/moonheritage?retryWrites=true&w=majority&appName=moonheritage
+        value: mongodb+srv://Tejas68:<db_password>@moon-heritage.vlzngzv.mongodb.net/moonheritage?retryWrites=true&w=majority&appName=moon-heritage
 
-      # JWT secret — generate a long random string
       - key: JWT_SECRET
-        value: Replace-This-With-A-Very-Long-Random-Secret-Key-Min-32-Chars
+        value: MySuperSecretKeyForMoonHeritage2026
 
-      # Vercel frontend URL (update after Vercel deploy)
       - key: CORS_ALLOWED_ORIGINS
-        value: https://YOUR-APP.vercel.app,http://localhost:3000
+        value: https://moon-heritage-hotel.vercel.app
 
-      # Enable secure HTTPS-only cookies
       - key: COOKIE_SECURE
         value: "true"
