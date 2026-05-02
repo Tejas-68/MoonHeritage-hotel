@@ -10,7 +10,7 @@ services:
     healthCheckPath: /api/hotels 
     envVars:
       - key: MONGODB_URI
-        value: mongodb+srv://Tejas68:<db_password>@moon-heritage.vlzngzv.mongodb.net/moonheritage?retryWrites=true&w=majority&appName=moon-heritage
+        value: mongodb+srv://Tejas68:Tejas68@moon-heritage.vlzngzv.mongodb.net/moonheritage?retryWrites=true&w=majority&appName=moon-heritage
 
       - key: JWT_SECRET
         value: MySuperSecretKeyForMoonHeritage2026
